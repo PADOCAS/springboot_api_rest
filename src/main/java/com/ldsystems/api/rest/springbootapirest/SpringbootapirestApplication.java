@@ -16,5 +16,4 @@ public class SpringbootapirestApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(SpringbootapirestApplication.class, args);
     }
-
 }
