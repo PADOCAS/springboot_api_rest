@@ -110,4 +110,15 @@ public class UsuarioController {
         Usuario usuarioSave = usuarioRepository.save(usuario);
         return ResponseEntity.ok(usuarioSave);
     }
+
+    @DeleteMapping(value = "/{id}", produces = "application/text")
+    public ResponseEntity<?> deletaUsuario(@PathVariable(value = "id") Long id) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        if (optionalUsuario.isPresent()) {
+            usuarioRepository.deleteById(id);
+            return ResponseEntity.ok("Usuário deletado com sucesso!");
+        } else {
+            return ResponseEntity.ok("Usuário não encontrado!");
+        }
+    }
 }
