@@ -8,11 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 
 @RestController //Arquitetura REST
-@RequestMapping(value = "/index")
-public class IndexController {
+@RequestMapping(value = "/usuario")
+public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -38,7 +41,7 @@ public class IndexController {
         return new ResponseEntity<>(str.toString(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/usuario", produces = "application/json")
+    @GetMapping(value = "/teste", produces = "application/json")
     public ResponseEntity<Usuario> getUsuario() {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
@@ -49,7 +52,7 @@ public class IndexController {
         return ResponseEntity.ok(usuario);
     }
 
-    @GetMapping(value = "/usuarios", produces = "application/json")
+    @GetMapping(value = "/listteste", produces = "application/json")
     public ResponseEntity<List<Usuario>> getUsuariosTesteManual() {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
@@ -76,7 +79,7 @@ public class IndexController {
         return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping(value = "/listAll", produces = "application/json")
+    @GetMapping(value = "/listall", produces = "application/json")
     public ResponseEntity<?> getListUsuario() {
         List<Usuario> listUsuario = usuarioRepository.findAll();
         listUsuario.sort(Comparator.comparing(Usuario::getId));
@@ -94,5 +97,11 @@ public class IndexController {
         //O retorno seria um Relatório
         //Teria que criar a rotina de gerar o PDF e retornar ele!
         return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping(value = "/", produces = "application/json")
+    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioSave = usuarioRepository.save(usuario);
+        return ResponseEntity.ok(usuarioSave);
     }
 }
