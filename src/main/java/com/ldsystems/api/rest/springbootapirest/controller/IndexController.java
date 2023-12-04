@@ -1,20 +1,21 @@
 package com.ldsystems.api.rest.springbootapirest.controller;
 
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
+import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController //Arquitetura REST
 @RequestMapping(value = "/index")
 public class IndexController {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     /**
      * Método para retornar uma mensagem ao receber uma requisição
@@ -49,7 +50,7 @@ public class IndexController {
     }
 
     @GetMapping(value = "/usuarios", produces = "application/json")
-    public ResponseEntity<List<Usuario>> getUsuarios() {
+    public ResponseEntity<List<Usuario>> getUsuariosTesteManual() {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         usuario.setLogin("admin");
@@ -67,5 +68,19 @@ public class IndexController {
         listUsuarios.add(usuario2);
 
         return ResponseEntity.ok(listUsuarios);
+    }
+
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<Usuario> getUsuarioPorID(@PathVariable(value = "id") Long id) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping(value = "/listAll", produces = "application/json")
+    public ResponseEntity getListUsuario() {
+        List<Usuario> listUsuario = usuarioRepository.findAll();
+        Collections.sort(listUsuario, Comparator.comparing(Usuario::getId));
+
+        return ResponseEntity.ok(listUsuario);
     }
 }
