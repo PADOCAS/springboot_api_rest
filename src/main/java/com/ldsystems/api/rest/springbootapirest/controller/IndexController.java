@@ -28,14 +28,14 @@ public class IndexController {
     //defaultValue, caso não passar o parametro nome, vai assumir esse default!
     //required default é SIM, se você colocar false ele não vai exigir para chamada do método!
     @GetMapping(value = "/", produces = "application/json")
-    public ResponseEntity init(@RequestParam(value = "nome", defaultValue = "estudante", required = false) String nome, @RequestParam(value = "salario", required = false) BigDecimal salario) {
+    public ResponseEntity<?> init(@RequestParam(value = "nome", defaultValue = "estudante", required = false) String nome, @RequestParam(value = "salario", required = false) BigDecimal salario) {
         System.out.println("Nome: " + nome);
         System.out.println("Salário: " + salario);
 
         StringBuilder str = new StringBuilder();
         str.append("Olá, seja bem vindo ").append(nome);
         str.append(" Bora Brasil. Seu salário: ").append(salario == null ? BigDecimal.valueOf(0).toString() : salario.toString());
-        return new ResponseEntity(str.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(str.toString(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/usuario", produces = "application/json")
@@ -63,7 +63,7 @@ public class IndexController {
         usuario2.setSenha("123");
         usuario2.setNome("Padoca");
 
-        List<Usuario> listUsuarios = new ArrayList<Usuario>();
+        List<Usuario> listUsuarios = new ArrayList<>();
         listUsuarios.add(usuario);
         listUsuarios.add(usuario2);
 
@@ -71,16 +71,28 @@ public class IndexController {
     }
 
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<Usuario> getUsuarioPorID(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<?> getUsuarioPorID(@PathVariable(value = "id") Long id) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
-        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/listAll", produces = "application/json")
-    public ResponseEntity getListUsuario() {
+    public ResponseEntity<?> getListUsuario() {
         List<Usuario> listUsuario = usuarioRepository.findAll();
-        Collections.sort(listUsuario, Comparator.comparing(Usuario::getId));
+        listUsuario.sort(Comparator.comparing(Usuario::getId));
 
         return ResponseEntity.ok(listUsuario);
+    }
+
+    //Simulando um retorno de um relatório:
+    //Exemplo URL -> http://localhost:8080/springbootapirest/index/10/venda/299
+    @GetMapping(value = "/{id}/venda/{codigovenda}", produces = "application/pdf")
+    public ResponseEntity<?> getRelatorioPdfApenasTeste(@PathVariable(value = "id") Long id, @PathVariable(value = "codigovenda") Long codigovenda) {
+        System.out.println("Id: " + id + ", Venda: " + codigovenda);
+
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        //O retorno seria um Relatório
+        //Teria que criar a rotina de gerar o PDF e retornar ele!
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 }
