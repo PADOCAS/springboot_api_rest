@@ -104,4 +104,10 @@ public class UsuarioController {
         Usuario usuarioSave = usuarioRepository.save(usuario);
         return ResponseEntity.ok(usuarioSave);
     }
+
+    @PutMapping(value = "/", produces = "application/json")
+    public ResponseEntity<Usuario> atualizarUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioSave = usuarioRepository.save(usuario);
+        return ResponseEntity.ok(usuarioSave);
+    }
 }
