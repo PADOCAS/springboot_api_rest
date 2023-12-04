@@ -88,7 +88,7 @@ public class UsuarioController {
     }
 
     //Simulando um retorno de um relatório:
-    //Exemplo URL -> http://localhost:8080/springbootapirest/index/10/venda/299
+    //Exemplo URL -> http://localhost:8080/springbootapirest/usuario/10/venda/299
     @GetMapping(value = "/{id}/venda/{codigovenda}", produces = "application/pdf")
     public ResponseEntity<?> getRelatorioPdfApenasTeste(@PathVariable(value = "id") Long id, @PathVariable(value = "codigovenda") Long codigovenda) {
         System.out.println("Id: " + id + ", Venda: " + codigovenda);
