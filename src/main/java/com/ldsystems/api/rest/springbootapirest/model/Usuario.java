@@ -3,6 +3,7 @@ package com.ldsystems.api.rest.springbootapirest.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -21,6 +22,9 @@ public class Usuario implements Serializable {
 
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Telefone> listTelefone;
 
     public Usuario() {
     }
@@ -59,6 +63,14 @@ public class Usuario implements Serializable {
 
     public void setSenha(String senha) {
         this.senha = senha;
+    }
+
+    public List<Telefone> getListTelefone() {
+        return listTelefone;
+    }
+
+    public void setListTelefone(List<Telefone> listTelefone) {
+        this.listTelefone = listTelefone;
     }
 
     @Override

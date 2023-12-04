@@ -101,7 +101,18 @@ public class UsuarioController {
 
     @PostMapping(value = "/", produces = "application/json")
     public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) {
-        Usuario usuarioSave = usuarioRepository.save(usuario);
+        Usuario usuarioSave = null;
+
+        if(usuario != null) {
+            if(usuario.getListTelefone() != null) {
+                usuario.getListTelefone().forEach(telefone -> {
+                    telefone.setUsuario(usuario);
+                });
+            }
+
+            usuarioSave = usuarioRepository.save(usuario);
+        }
+
         return ResponseEntity.ok(usuarioSave);
     }
 
