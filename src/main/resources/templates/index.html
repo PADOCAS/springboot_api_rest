@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring REST API</title>
+
+    <!--    jQuery:-->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+            integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!--    Apenas para teste de politica do CORS ajax de uma API externa!! o navegador mesmo bloqueia:-->
+<!--    Request URL:-->
+<!--    https://ldsystems.com.br:40080/spring-api-santander-bootcamp/usuarios-->
+<!--    Referrer Policy:-->
+<!--    strict-origin-when-cross-origin-->
+    <script>
+        jQuery(document).ready(
+            function () {
+                jQuery.ajax({
+                    url: "https://ldsystems.com.br:40080/spring-api-santander-bootcamp/usuarios",
+                    method: "GET"
+                }).then(
+                    function (data, status, info) {
+
+                    }
+                );
+            }
+        );
+    </script>
+</body>
+</html>
