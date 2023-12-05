@@ -43,6 +43,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Spring Security: (security web, config e thymeleaf extras spring security)   -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!--		DevTools serve para ao fazer mudanças no projeto e já estiver executando ele já atualiza o projeto em tempo real já aplicando as alterações-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
