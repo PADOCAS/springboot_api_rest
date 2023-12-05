@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,8 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
-//@CrossOrigin(origins = "*")  Forma default, qualquer sistema poderá acessar esse RestController
-@CrossOrigin(origins = {"https://www.ldsystems.com.br", "https://www.google.com.br"}) // Só serão aceitas requisições vindas dessa URL
+@CrossOrigin(origins = "*")  // Forma default, qualquer sistema poderá acessar esse RestController
+//@CrossOrigin(origins = {"https://www.ldsystems.com.br", "https://www.google.com.br"}) // Só serão aceitas requisições vindas dessa URL
 @RestController //Arquitetura REST
 @RequestMapping(value = "/usuario")
 public class UsuarioController {
@@ -55,8 +56,8 @@ public class UsuarioController {
     }
 
     //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
-    //@CrossOrigin(origins = "*")  Forma default, qualquer sistema poderá acessar esse RestController
-    @CrossOrigin(origins = "https://www.ldsystems.com.br", methods = {RequestMethod.GET})
+    @CrossOrigin(origins = "*")  //Forma default, qualquer sistema poderá acessar esse RestController
+//    @CrossOrigin(origins = "https://www.ldsystems.com.br", methods = {RequestMethod.GET})
     @GetMapping(value = "/listteste", produces = "application/json")
     public ResponseEntity<List<Usuario>> getUsuariosTesteManual() {
         Usuario usuario = new Usuario();
