@@ -23,7 +23,7 @@ public class Usuario implements Serializable {
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
 
     public Usuario() {

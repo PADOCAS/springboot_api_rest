@@ -103,8 +103,8 @@ public class UsuarioController {
     public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) {
         Usuario usuarioSave = null;
 
-        if(usuario != null) {
-            if(usuario.getListTelefone() != null) {
+        if (usuario != null) {
+            if (usuario.getListTelefone() != null) {
                 usuario.getListTelefone().forEach(telefone -> {
                     telefone.setUsuario(usuario);
                 });
@@ -117,8 +117,27 @@ public class UsuarioController {
     }
 
     @PutMapping(value = "/", produces = "application/json")
-    public ResponseEntity<Usuario> atualizarUsuario(@RequestBody Usuario usuario) {
-        Usuario usuarioSave = usuarioRepository.save(usuario);
+    public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuario) {
+        Usuario usuarioSave = null;
+
+        if (usuario != null
+                && usuario.getId() != null) {
+            Optional<Usuario> optionalUsuario = usuarioRepository.findById(usuario.getId());
+            if (optionalUsuario.isPresent()) {
+                if (usuario.getListTelefone() != null) {
+                    usuario.getListTelefone().forEach(telefone -> {
+                        telefone.setUsuario(usuario);
+                    });
+                }
+
+                usuarioSave = usuarioRepository.save(usuario);
+            } else {
+                return ResponseEntity.ok("Usuário com ID(" + usuario.getId().toString() + ") " + "não encontrado!");
+            }
+        } else {
+            return ResponseEntity.ok("Deve ser informado um ID para o usuário que deseja atualizar!");
+        }
+
         return ResponseEntity.ok(usuarioSave);
     }
 
