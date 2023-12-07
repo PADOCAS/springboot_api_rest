@@ -16,7 +16,7 @@
     <description>Projeto SpringBoot API RESTful</description>
     <properties>
         <java.version>17</java.version>
-<!--        Ignorar testes para gerar o deploy-->
+        <!--        Ignorar testes para gerar o deploy-->
         <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
@@ -63,6 +63,13 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- TOKEN JWT -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.12.3</version>
         </dependency>
 
         <!--        Necessário colocar o JAKARTA para deploy no payaramicro!!! -->
