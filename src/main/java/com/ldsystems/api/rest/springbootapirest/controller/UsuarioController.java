@@ -128,7 +128,7 @@ public class UsuarioController {
 
     @PutMapping(value = "/", produces = "application/json")
     public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuario) {
-        Usuario usuarioSave = null;
+        Usuario usuarioSave;
 
         if (usuario != null
                 && usuario.getId() != null) {
