@@ -5,6 +5,7 @@ import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -115,6 +116,9 @@ public class UsuarioController {
                     telefone.setUsuario(usuario);
                 });
             }
+
+            //Criptografando Senha:
+            usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
 
             usuarioSave = usuarioRepository.save(usuario);
         }
