@@ -80,8 +80,34 @@ public class UsuarioController {
         return ResponseEntity.ok(listUsuarios);
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<?> getUsuarioPorID(@PathVariable(value = "id") Long id) {
+    //Simulando controle de versão direto na URI (v1)
+    @GetMapping(value = "v1/{id}", produces = "application/json")
+    public ResponseEntity<?> getUsuarioPorIDV1(@PathVariable(value = "id") Long id) {
+        System.out.println("Executando versão 1!");
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+    }
+
+    //Simulando controle de versão direto na URI (v2
+    @GetMapping(value = "v2/{id}", produces = "application/json")
+    public ResponseEntity<?> getUsuarioPorIDV2(@PathVariable(value = "id") Long id) {
+        System.out.println("Executando versão 2!");
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+    }
+
+    //Simulando controle de versão por header (v1), deve ser passado como parâmetro no header da requisição!
+    @GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
+    public ResponseEntity<?> getUsuarioPorIDHeaderV1(@PathVariable(value = "id") Long id) {
+        System.out.println("Executando versão Header 1!");
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+    }
+
+    //Simulando controle de versão por header (v2), deve ser passado como parâmetro no header da requisição!
+    @GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v2")
+    public ResponseEntity<?> getUsuarioPorIDHeaderV2(@PathVariable(value = "id") Long id) {
+        System.out.println("Executando versão Header 2!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
         return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
