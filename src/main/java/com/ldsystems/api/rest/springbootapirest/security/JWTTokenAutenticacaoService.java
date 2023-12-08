@@ -14,7 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.security.Key;
 import java.util.Date;
 
 /**
@@ -29,7 +31,10 @@ public class JWTTokenAutenticacaoService {
     private static final long EXPIRATION_TIME = 172800000;
 
     //Uma senha única para compor a autenticação:
-    private static final String SECRET = "*36dP_)(!s2S@)_SenhaExtremamenteSecreta|LdSystems|@*#__@RESTAPI*_)@!1";
+    private static final String SECRET = "dashdSLSDS22332sdd2SSDAAa3457974hgbEERFf8432836dPs2SSenhaExtremamenteSecretaLdSystemsRESTAPI1890udndfh3SDDF2";
+
+    //Key gerada com a chave secreta em algoritmo de assinatura HS512:
+    private static final Key SIGNING_KEY = new SecretKeySpec(SECRET.getBytes(),  SignatureAlgorithm.HS512.getJcaName());
 
     //Prefixo do Token -> Fixo Bearer
     private static final String TOKEN_PREFIX = "Bearer";
@@ -46,7 +51,8 @@ public class JWTTokenAutenticacaoService {
         String jwt = Jwts.builder()
                 .subject(username) //Adiciona o Usuário
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) //Expiration -> Data atual + 2 dias
-                .signWith(Keys.hmacShaKeyFor(SECRET.getBytes()), SignatureAlgorithm.HS512).compact(); //Compactação e algoritmos de geração de senha
+                .signWith(SIGNING_KEY, SignatureAlgorithm.HS512).compact(); //Compactação e algoritmos de geração de senha
+        //   Keys.hmacShaKeyFor(SECRET.getBytes()), SignatureAlgorithm.HS512)
 
         //Junta o token com o prefixo Bearer:
         String token = TOKEN_PREFIX + " " + jwt; //Exemplo: Bearer 943574395794357493574398543958
@@ -69,9 +75,9 @@ public class JWTTokenAutenticacaoService {
             // Use a chave secreta para verificar o token
             //Referente a aula 44 -> Muita coisa depreciada, vamos alinhar isso quando for rodar!
             Claims claims = Jwts.parser()
-                    .setSigningKey(SECRET) //Bearer 943574395794357493574398543958
+                    .setSigningKey(SIGNING_KEY) //Bearer 943574395794357493574398543958
                     .build()
-                    .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))//943574395794357493574398543958
+                    .parseClaimsJws(token.replace(TOKEN_PREFIX, "").replaceAll("\\s", ""))//943574395794357493574398543958
                     .getBody();
 
             String user = claims.getSubject(); //andre
