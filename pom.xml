@@ -72,6 +72,13 @@
             <version>0.12.3</version>
         </dependency>
 
+        <!-- Configurar Pool de conexões -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
         <!--        Necessário colocar o JAKARTA para deploy no payaramicro!!! -->
         <dependency>
             <groupId>jakarta.platform</groupId>
