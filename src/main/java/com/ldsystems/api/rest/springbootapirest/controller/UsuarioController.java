@@ -140,6 +140,14 @@ public class UsuarioController {
                     });
                 }
 
+                //Verifica se a senha for enviada uma atualização:
+                if (optionalUsuario.get().getSenha() != null
+                        && usuario.getSenha() != null
+                        && !optionalUsuario.get().getSenha().equals(usuario.getSenha())) {
+                    //Criptografando Senha:
+                    usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
+                }
+
                 usuarioSave = usuarioRepository.save(usuario);
             } else {
                 return ResponseEntity.ok("Usuário com ID(" + usuario.getId().toString() + ") " + "não encontrado!");
