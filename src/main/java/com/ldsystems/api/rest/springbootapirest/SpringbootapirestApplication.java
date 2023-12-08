@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -14,6 +15,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableTransactionManagement  //Gerenciar transações tudo automaticamente
 @EnableWebMvc // Permitindo trabalhar com WebMVC
 @RestController //Projeto que vai rodar REST
+@EnableCaching //Habilitar o cache
 public class SpringbootapirestApplication extends SpringBootServletInitializer {
 
     @Override

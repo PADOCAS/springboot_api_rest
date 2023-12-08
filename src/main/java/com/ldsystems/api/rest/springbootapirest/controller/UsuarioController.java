@@ -3,6 +3,8 @@ package com.ldsystems.api.rest.springbootapirest.controller;
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -112,10 +114,19 @@ public class UsuarioController {
         return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
+    //Fazer o processo em cache, simulando um processo lento que demore 6 segundos essa consulta (Thread)
+    //Se tiver em cache, a mesma consulta depois vai trazer rapidão pois já vai estar em cache!
+    @Cacheable("cache_usuario_listall") //Essa opção por default só refaz a consulta se tiver alteração nos parâmetros da entrada, caso contrário fica sempre em cache
     @GetMapping(value = "/listall", produces = "application/json")
     public ResponseEntity<?> getListUsuario() {
         List<Usuario> listUsuario = usuarioRepository.findAll();
         listUsuario.sort(Comparator.comparing(Usuario::getId));
+
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         return ResponseEntity.ok(listUsuario);
     }
