@@ -1,5 +1,6 @@
 package com.ldsystems.api.rest.springbootapirest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +21,7 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "login", nullable = false, length = 30)
+    @Column(name = "login", nullable = false, length = 30, unique = true)
     private String login;
 
     @Column(name = "nome", nullable = false, length = 100)
@@ -50,31 +51,37 @@ public class Usuario implements UserDetails {
         return getListRole();
     }
 
+    @JsonIgnore //Não trazer coluna no JSON! Não queremos!
     @Override
     public String getPassword() {
         return getSenha();
     }
 
+    @JsonIgnore
     @Override
     public String getUsername() {
         return getLogin();
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
         return true;
