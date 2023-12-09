@@ -4,7 +4,7 @@ import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -116,17 +116,19 @@ public class UsuarioController {
 
     //Fazer o processo em cache, simulando um processo lento que demore 6 segundos essa consulta (Thread)
     //Se tiver em cache, a mesma consulta depois vai trazer rapidão pois já vai estar em cache!
-    @Cacheable("cache_usuario_listall") //Essa opção por default só refaz a consulta se tiver alteração nos parâmetros da entrada, caso contrário fica sempre em cache
+//    @Cacheable("cache_usuario_listall") //Essa opção por default só refaz a consulta se tiver alteração nos parâmetros da entrada, caso contrário fica sempre em cache
+    @CacheEvict(value = "cacheUsuarios", allEntries = true)//Vai deixar o cache sempre limpo, mesmo que não haja iterações na tabela
+    @CachePut(value = "cacheUsuarios")//Qualquer mudança nas tabelas envolvidas vai atualizar o cache com os dados atualizados!
     @GetMapping(value = "/listall", produces = "application/json")
     public ResponseEntity<?> getListUsuario() {
         List<Usuario> listUsuario = usuarioRepository.findAll();
         listUsuario.sort(Comparator.comparing(Usuario::getId));
 
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
         return ResponseEntity.ok(listUsuario);
     }
