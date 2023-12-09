@@ -33,10 +33,17 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-<!--        Trabalhar com cache-->
+        <!--        Trabalhar com cache, no payara micro não funciona, temos que o usar o hazelcast (importado abaixo)-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-cache</artifactId>-->
+<!--        </dependency>-->
+
+        <!--        Hazelcast para Cache, payara micro não está gerenciando bem sem usar hazelcast-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-cache</artifactId>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>5.3.6</version>
         </dependency>
 
         <dependency>
