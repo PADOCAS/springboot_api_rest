@@ -30,6 +30,9 @@ public class Usuario implements UserDetails {
     @Column(name = "senha", nullable = false, length = 100)
     private String senha;
 
+    @Column(name = "token")
+    private String token;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
 
@@ -137,6 +140,14 @@ public class Usuario implements UserDetails {
 
     public void setListRole(List<Role> listRole) {
         this.listRole = listRole;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override

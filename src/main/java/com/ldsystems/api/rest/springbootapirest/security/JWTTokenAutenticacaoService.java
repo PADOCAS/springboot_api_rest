@@ -6,7 +6,6 @@ import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +33,7 @@ public class JWTTokenAutenticacaoService {
     private static final String SECRET = "dashdSLSDS22332sdd2SSDAAa3457974hgbEERFf8432836dPs2SSenhaExtremamenteSecretaLdSystemsRESTAPI1890udndfh3SDDF2";
 
     //Key gerada com a chave secreta em algoritmo de assinatura HS512:
-    private static final Key SIGNING_KEY = new SecretKeySpec(SECRET.getBytes(),  SignatureAlgorithm.HS512.getJcaName());
+    private static final Key SIGNING_KEY = new SecretKeySpec(SECRET.getBytes(), SignatureAlgorithm.HS512.getJcaName());
 
     //Prefixo do Token -> Fixo Bearer
     private static final String TOKEN_PREFIX = "Bearer";
@@ -86,7 +85,13 @@ public class JWTTokenAutenticacaoService {
                 Usuario usuario = ApplicationContextLoad.getApplicationContext().getBean(UsuarioRepository.class).findUsuarioByLogin(user);
 
                 if (usuario != null) {
+                    //Caso quiser fazer uma validação do token enviado com o token gravado no banco de dados para o usuário, colocar a validação aqui!
+                    //Caso for diferente não deixa autenticar!
+                    //Não achei legal colocar isso ainda, pois o usuário pode criar vários tokens para ele sendo válidos (mais de 1), basta entrar /login e vai gerar token
+                    //O jeito que foi feita a aula ele fica apenas um token gravado para o usuário o que não faria sentido!! não vamos colocar isso agora:
+//                    if(usuario.getToken().equals(token.replace(TOKEN_PREFIX, "").replaceAll("\\s", ""))) {
                     return new UsernamePasswordAuthenticationToken(usuario.getLogin(), usuario.getSenha(), usuario.getAuthorities());
+//                    }
                 }
             }
         }
