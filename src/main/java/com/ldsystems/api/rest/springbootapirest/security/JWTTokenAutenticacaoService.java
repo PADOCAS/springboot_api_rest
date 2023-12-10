@@ -58,6 +58,8 @@ public class JWTTokenAutenticacaoService {
 
         //Adiciona no cabeçalho de resposta:
         response.addHeader(HEADER_STRING, token); //Authorization: Bearer 943574395794357493574398543958
+        //Liberando respostas -> Permite que seu servidor seja acessível por qualquer aplicativo, independentemente de onde ele esteja hospedado:
+        liberacaoCors(response);
         //Adiciona no corpo da resposta em formato JSON:
         response.getWriter().write("{\"Authorization\": \"" + token + "\"}");
     }
@@ -65,7 +67,7 @@ public class JWTTokenAutenticacaoService {
     /**
      * Retorna o usuário validado com token ou caso não seja válido, retorna null
      */
-    public Authentication getAuthentication(HttpServletRequest request) {
+    public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
         //Pega o token enviado no cabaçalho HTTP:
         String token = request.getHeader(HEADER_STRING);
 
@@ -90,13 +92,40 @@ public class JWTTokenAutenticacaoService {
                     //Não achei legal colocar isso ainda, pois o usuário pode criar vários tokens para ele sendo válidos (mais de 1), basta entrar /login e vai gerar token
                     //O jeito que foi feita a aula ele fica apenas um token gravado para o usuário o que não faria sentido!! não vamos colocar isso agora:
 //                    if(usuario.getToken().equals(token.replace(TOKEN_PREFIX, "").replaceAll("\\s", ""))) {
+                    //Liberando respostas -> Permite que seu servidor seja acessível por qualquer aplicativo, independentemente de onde ele esteja hospedado:
+                    liberacaoCors(response);
                     return new UsernamePasswordAuthenticationToken(usuario.getLogin(), usuario.getSenha(), usuario.getAuthorities());
 //                    }
                 }
             }
         }
 
+        //Liberando respostas -> Permite que seu servidor seja acessível por qualquer aplicativo, independentemente de onde ele esteja hospedado:
+        liberacaoCors(response);
         //Não autorizado:
         return null;
+    }
+
+    /**
+     * Permite que seu servidor seja acessível por qualquer aplicativo, independentemente de onde ele esteja hospedado. Isso é útil se você estiver desenvolvendo uma API que será usada por aplicativos de terceiros.
+     *
+     * @param response HttpServletResponse
+     */
+    private void liberacaoCors(HttpServletResponse response) {
+        if (response.getHeader("Access-Control-Allow-Origin") == null) {
+            response.addHeader("Access-Control-Allow-Origin", "*");
+        }
+
+        if (response.getHeader("Access-Control-Allow-Headers") == null) {
+            response.addHeader("Access-Control-Allow-Headers", "*");
+        }
+
+        if (response.getHeader("Access-Control-Request-Headers") == null) {
+            response.addHeader("Access-Control-Request-Headers", "*");
+        }
+
+        if (response.getHeader("Access-Control-Allow-Methods") == null) {
+            response.addHeader("Access-Control-Allow-Methods", "*");
+        }
     }
 }

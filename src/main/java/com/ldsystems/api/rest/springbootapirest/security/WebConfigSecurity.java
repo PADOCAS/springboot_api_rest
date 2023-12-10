@@ -2,6 +2,7 @@ package com.ldsystems.api.rest.springbootapirest.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -40,6 +41,7 @@ public class WebConfigSecurity {
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/index")).permitAll() // Qualquer usuário acessa a página inicial
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/login")).permitAll() // Qualquer usuário acessa o login
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll() // Qualquer usuário acessa o login
+                                .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS, "/**")).permitAll() //HTTP do tipo OPTIONS para qualquer caminho são permitidas para todos os usuários, independentemente de estarem autenticados ou não. Essas solicitações são frequentemente usadas por navegadores e outros clientes para testar a disponibilidade de um serviço
                                 .anyRequest().authenticated()
                 )
                 //Não será formulário de Login e sim TOKEN para validação:
