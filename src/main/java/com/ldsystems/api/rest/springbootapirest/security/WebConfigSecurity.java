@@ -1,5 +1,7 @@
 package com.ldsystems.api.rest.springbootapirest.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 /**
@@ -20,6 +23,20 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableWebSecurity
 public class WebConfigSecurity {
+
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver exceptionResolver;
+
+    @Bean
+    public JWTAPIAutenticacaoFilter jwtApiAutenticacaoFilter() {
+        return new JWTAPIAutenticacaoFilter(exceptionResolver);
+    }
+
+    @Bean
+    public JWTLoginFilter jwtLoginFilter(AuthenticationConfiguration configuration) throws Exception {
+        return new JWTLoginFilter(authenticationManager(configuration), exceptionResolver);
+    }
 
     /**
      * Para funcionamento no payara deve ser deixado dessa forma!! tomcat e payara testados!
@@ -45,11 +62,12 @@ public class WebConfigSecurity {
                                 .anyRequest().authenticated()
                 )
                 //Não será formulário de Login e sim TOKEN para validação:
+                //Filtros, devem ser na ordem considerando before e after e a ordem de passagem deles aqui:
+                //Filtra demais requisições para verificar a presença de token JWT no header HTTP:
+                .addFilterBefore(jwtApiAutenticacaoFilter(), UsernamePasswordAuthenticationFilter.class) //Ordem 1 dos filtros -> Autenticação do Token
                 //Filtra requisições de Login para autenticação: -> Quando executar contexto/login ele vai tentar tentar autenticar o usuário com as informações de usuario e senha enviadas por JSON!
                 //Se tiver tudo OK, autenticado, ele vai gerar um TOKEN de resposta para o usuário utilizar nas requisições!
-                .addFilterBefore(new JWTLoginFilter("/login", authenticationManager(configuration)), UsernamePasswordAuthenticationFilter.class)
-                //Filtra demais requisições para verificar a presença de token JWT no header HTTP:
-                .addFilterBefore(new JWTAPIAutenticacaoFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtLoginFilter(configuration), UsernamePasswordAuthenticationFilter.class) //Ordem 2 dos filtros -> Login Usuário e senha
                 .logout(logout -> {
                     logout.logoutRequestMatcher(new AntPathRequestMatcher("/logout")); // Mapeia URL de logout e invalida usuário autenticado
                     logout.logoutSuccessUrl("/index").permitAll(); // Ao fazer logout volta para página de login! testar direto na url colocando /logout que vai fazer
