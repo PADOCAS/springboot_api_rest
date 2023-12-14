@@ -34,10 +34,10 @@
         </dependency>
 
         <!--        Trabalhar com cache, no payara micro não funciona, temos que o usar o hazelcast (importado abaixo)-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-cache</artifactId>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-cache</artifactId>-->
+        <!--        </dependency>-->
 
         <!--        Hazelcast para Cache, payara micro não está gerenciando bem sem usar hazelcast-->
         <dependency>
@@ -75,7 +75,8 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <scope>runtime</scope>
+<!--            Retirado o RunTime para utilizar uma classe pela dependência ao validar Exceptions do PSQL-->
+            <!--            <scope>runtime</scope>-->
         </dependency>
 
         <!-- TOKEN JWT -->

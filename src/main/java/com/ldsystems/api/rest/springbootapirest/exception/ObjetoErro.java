@@ -1,6 +1,7 @@
 package com.ldsystems.api.rest.springbootapirest.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -10,19 +11,27 @@ public class ObjetoErro implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @JsonProperty("excecao")
+    private String exception;
+
+    @JsonProperty("erro")
     private String erro;
 
+    @JsonProperty("uri")
     private String path;
 
+    @JsonProperty("codigo")
     private String codigo;
 
+    @JsonProperty("data")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime timestamp;
 
     public ObjetoErro() {
     }
 
-    public ObjetoErro(String erro, String path, String codigo, LocalDateTime timestamp) {
+    public ObjetoErro(String exception, String erro, String path, String codigo, LocalDateTime timestamp) {
+        this.exception = exception;
         this.erro = erro;
         this.path = path;
         this.codigo = codigo;
@@ -61,23 +70,32 @@ public class ObjetoErro implements Serializable {
         this.timestamp = timestamp;
     }
 
+    public String getException() {
+        return exception;
+    }
+
+    public void setException(String exception) {
+        this.exception = exception;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ObjetoErro that = (ObjetoErro) o;
-        return Objects.equals(erro, that.erro) && Objects.equals(path, that.path) && Objects.equals(codigo, that.codigo) && Objects.equals(timestamp, that.timestamp);
+        return Objects.equals(exception, that.exception) && Objects.equals(erro, that.erro) && Objects.equals(path, that.path) && Objects.equals(codigo, that.codigo) && Objects.equals(timestamp, that.timestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(erro, path, codigo, timestamp);
+        return Objects.hash(exception, erro, path, codigo, timestamp);
     }
 
     @Override
     public String toString() {
         return "ObjetoErro{" +
-                "erro='" + erro + '\'' +
+                "exception='" + exception + '\'' +
+                ", erro='" + erro + '\'' +
                 ", path='" + path + '\'' +
                 ", codigo='" + codigo + '\'' +
                 ", timestamp=" + timestamp +
