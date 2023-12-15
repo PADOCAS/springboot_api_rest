@@ -58,6 +58,10 @@ public class JWTTokenAutenticacaoService {
 
         //Adiciona no cabeçalho de resposta:
         response.addHeader(HEADER_STRING, token); //Authorization: Bearer 943574395794357493574398543958
+
+        //Atualiza Token do Usuário:
+        ApplicationContextLoad.getApplicationContext().getBean(UsuarioRepository.class).atualizaTokenUsuario(username, token.replace(TOKEN_PREFIX, "").replaceAll("\\s", ""));
+
         //Liberando respostas -> Permite que seu servidor seja acessível por qualquer aplicativo, independentemente de onde ele esteja hospedado:
         liberacaoCors(response);
         //Adiciona no corpo da resposta em formato JSON:
