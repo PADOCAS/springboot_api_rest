@@ -86,6 +86,13 @@
             <version>0.12.3</version>
         </dependency>
 
+<!--        GSON para trabalhar com JSON:-->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
         <!-- Configurar Pool de conexões -->
         <dependency>
             <groupId>com.zaxxer</groupId>

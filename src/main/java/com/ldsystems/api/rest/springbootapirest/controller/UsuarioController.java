@@ -1,5 +1,6 @@
 package com.ldsystems.api.rest.springbootapirest.controller;
 
+import com.google.gson.Gson;
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioDTO;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
@@ -11,7 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -160,7 +166,7 @@ public class UsuarioController {
     }
 
     @PostMapping(value = "/", produces = "application/json")
-    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave = null;
 
         if (usuario != null) {
@@ -169,6 +175,9 @@ public class UsuarioController {
                     telefone.setUsuario(usuario);
                 });
             }
+
+            //Consumindo API externa VIACEP:
+            chargedCep(usuario);
 
             //Criptografando Senha:
             usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
@@ -180,7 +189,7 @@ public class UsuarioController {
     }
 
     @PutMapping(value = "/", produces = "application/json")
-    public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave;
 
         if (usuario != null
@@ -192,6 +201,9 @@ public class UsuarioController {
                         telefone.setUsuario(usuario);
                     });
                 }
+
+                //Consumindo API externa VIACEP:
+                chargedCep(usuario);
 
                 //Verifica se a senha for enviada uma atualização:
                 if (optionalUsuario.get().getSenha() != null
@@ -221,5 +233,62 @@ public class UsuarioController {
         } else {
             return ResponseEntity.ok("Usuário não encontrado!");
         }
+    }
+
+    private void chargedCep(Usuario usuario) throws Exception {
+        if (usuario != null
+                && usuario.getCep() != null) {
+            //Valida CEP:
+            validaCepInformado(usuario.getCep());
+
+            try {
+                URL url = new URL("https://viacep.com.br/ws/" + usuario.getCep() + "/json/");
+                URLConnection urlConnection = url.openConnection();
+                InputStream inputStream = urlConnection.getInputStream();
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                String cep = "";
+                StringBuilder strJsonCep = new StringBuilder();
+
+                //Varre as linhas:
+                while ((cep = bufferedReader.readLine()) != null) {
+                    strJsonCep.append(cep);
+                }
+
+                Usuario usuarioPreenchimentoCepAuxiliar = new Gson().fromJson(strJsonCep.toString(), Usuario.class);
+                if (usuarioPreenchimentoCepAuxiliar != null) {
+                    usuario.setLogradouro(usuarioPreenchimentoCepAuxiliar.getLogradouro() == null || usuarioPreenchimentoCepAuxiliar.getLogradouro().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getLogradouro().toUpperCase());
+                    usuario.setBairro(usuarioPreenchimentoCepAuxiliar.getBairro() == null || usuarioPreenchimentoCepAuxiliar.getBairro().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getBairro().toUpperCase());
+                    usuario.setComplemento(usuarioPreenchimentoCepAuxiliar.getComplemento() == null || usuarioPreenchimentoCepAuxiliar.getComplemento().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getComplemento());
+                    usuario.setUf(usuarioPreenchimentoCepAuxiliar.getUf() == null || usuarioPreenchimentoCepAuxiliar.getUf().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getUf().toUpperCase());
+                    usuario.setLocalidade(usuarioPreenchimentoCepAuxiliar.getLocalidade() == null || usuarioPreenchimentoCepAuxiliar.getLocalidade().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getLocalidade().toUpperCase());
+                }
+            } catch (Exception ex) {
+                throw new Exception("CEP inválido. Informe um CEP Válido para prosseguir.");
+            }
+        }
+    }
+
+    private void validaCepInformado(String cep) throws Exception {
+        if (cep != null) {
+            if (cep.length() > 8) {
+                throw new Exception("Cep inválido! Deve ter no máximo 8 digitos.");
+            }
+
+            if (temCaracteresEspeciais(cep)) {
+                throw new Exception("Cep inválido! Apenas números devem ser informados!");
+            }
+        }
+    }
+
+    public static boolean temCaracteresEspeciais(String cep) {
+        if (cep != null) {
+            for (int i = 0; i < cep.length(); i++) {
+                if (!Character.isDigit(cep.charAt(i))) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
