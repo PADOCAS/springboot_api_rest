@@ -1,6 +1,7 @@
 package com.ldsystems.api.rest.springbootapirest.controller;
 
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
+import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioDTO;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
 @CrossOrigin(origins = "*")  // Forma default, qualquer sistema poderá acessar esse RestController
@@ -48,21 +50,22 @@ public class UsuarioController {
     }
 
     @GetMapping(value = "/teste", produces = "application/json")
-    public ResponseEntity<Usuario> getUsuario() {
+    public ResponseEntity<UsuarioDTO> getUsuario() {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         usuario.setLogin("admin");
         usuario.setSenha("123");
         usuario.setNome("Administrador Teste");
 
-        return ResponseEntity.ok(usuario);
+        //Retornando um DTO -> UsuarioDTO:
+        return ResponseEntity.ok(new UsuarioDTO(usuario));
     }
 
     //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
     @CrossOrigin(origins = "*")  //Forma default, qualquer sistema poderá acessar esse RestController
 //    @CrossOrigin(origins = "https://www.ldsystems.com.br", methods = {RequestMethod.GET})
     @GetMapping(value = "/listteste", produces = "application/json")
-    public ResponseEntity<List<Usuario>> getUsuariosTesteManual() {
+    public ResponseEntity<List<UsuarioDTO>> getUsuariosTesteManual() {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
         usuario.setLogin("admin");
@@ -75,9 +78,10 @@ public class UsuarioController {
         usuario2.setSenha("123");
         usuario2.setNome("Padoca");
 
-        List<Usuario> listUsuarios = new ArrayList<>();
-        listUsuarios.add(usuario);
-        listUsuarios.add(usuario2);
+        //Retornando uma lista de DTO -> UsuarioDTO:
+        List<UsuarioDTO> listUsuarios = new ArrayList<>();
+        listUsuarios.add(new UsuarioDTO(usuario));
+        listUsuarios.add(new UsuarioDTO(usuario2));
 
         return ResponseEntity.ok(listUsuarios);
     }
@@ -87,7 +91,8 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuarioPorIDV1(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão 1!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
-        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+        //Retornando um DTO -> UsuarioDTO:
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
     //Simulando controle de versão direto na URI (v2
@@ -95,7 +100,8 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuarioPorIDV2(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão 2!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
-        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+        //Retornando um DTO -> UsuarioDTO:
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
     //Simulando controle de versão por header (v1), deve ser passado como parâmetro no header da requisição!
@@ -103,7 +109,8 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuarioPorIDHeaderV1(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão Header 1!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
-        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+        //Retornando um DTO -> UsuarioDTO:
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
     //Simulando controle de versão por header (v2), deve ser passado como parâmetro no header da requisição!
@@ -111,14 +118,17 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuarioPorIDHeaderV2(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão Header 2!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
-        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+        //Retornando um DTO -> UsuarioDTO:
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
     //Fazer o processo em cache, simulando um processo lento que demore 6 segundos essa consulta (Thread)
     //Se tiver em cache, a mesma consulta depois vai trazer rapidão pois já vai estar em cache!
 //    @Cacheable("cache_usuario_listall") //Essa opção por default só refaz a consulta se tiver alteração nos parâmetros da entrada, caso contrário fica sempre em cache
-    @CacheEvict(value = "cacheUsuarios", allEntries = true)//Vai deixar o cache sempre limpo, mesmo que não haja iterações na tabela
-    @CachePut(value = "cacheUsuarios")//Qualquer mudança nas tabelas envolvidas vai atualizar o cache com os dados atualizados!
+    @CacheEvict(value = "cacheUsuarios", allEntries = true)
+//Vai deixar o cache sempre limpo, mesmo que não haja iterações na tabela
+    @CachePut(value = "cacheUsuarios")
+//Qualquer mudança nas tabelas envolvidas vai atualizar o cache com os dados atualizados!
     @GetMapping(value = "/listall", produces = "application/json")
     public ResponseEntity<?> getListUsuario() {
         List<Usuario> listUsuario = usuarioRepository.findAll();
@@ -130,7 +140,10 @@ public class UsuarioController {
 //            throw new RuntimeException(e);
 //        }
 
-        return ResponseEntity.ok(listUsuario);
+        //Retornando uma list DTO -> UsuarioDTO:
+        return ResponseEntity.ok(listUsuario.stream()
+                .map(usuario -> new UsuarioDTO(usuario))
+                .collect(Collectors.toList()));
     }
 
     //Simulando um retorno de um relatório:
@@ -142,7 +155,8 @@ public class UsuarioController {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
         //O retorno seria um Relatório
         //Teria que criar a rotina de gerar o PDF e retornar ele!
-        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+        //Retornando um DTO -> UsuarioDTO:
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
     @PostMapping(value = "/", produces = "application/json")
