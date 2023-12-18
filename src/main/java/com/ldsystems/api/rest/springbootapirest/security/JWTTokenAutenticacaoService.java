@@ -82,7 +82,7 @@ public class JWTTokenAutenticacaoService {
             Claims claims = Jwts.parser()
                     .setSigningKey(SIGNING_KEY) //Bearer 943574395794357493574398543958
                     .build()
-                    .parseClaimsJws(token.replace(TOKEN_PREFIX, "").replaceAll("\\s", ""))//943574395794357493574398543958
+                    .parseClaimsJws(token.replace(TOKEN_PREFIX, "").replaceAll(" ", "").replaceAll("\\s", ""))//943574395794357493574398543958
                     .getBody();
 
             String user = claims.getSubject(); //andre
@@ -116,6 +116,7 @@ public class JWTTokenAutenticacaoService {
      * @param response HttpServletResponse
      */
     private void liberacaoCors(HttpServletResponse response) {
+        //Liberando Resposta para porta diferente:
         if (response.getHeader("Access-Control-Allow-Origin") == null) {
             response.addHeader("Access-Control-Allow-Origin", "*");
         }
