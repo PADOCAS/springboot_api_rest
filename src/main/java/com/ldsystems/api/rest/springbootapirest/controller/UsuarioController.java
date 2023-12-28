@@ -128,6 +128,24 @@ public class UsuarioController {
         return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Consulta de Usuários por nome!
+     *
+     * @param nome (Nome do Usuário -> String)
+     * @return List - UsuarioDTO em JSON
+     */
+    @CacheEvict(value = "cacheUsuariosPorNome", allEntries = true)
+    @CachePut(value = "cacheUsuariosPorNome")
+    @GetMapping(value = "/usuariopornome/{nome}", produces = "application/json")
+    public ResponseEntity<?> getListUsuarioPorNome(@PathVariable(value = "nome") String nome) {
+        List<Usuario> listUsuario = usuarioRepository.findUsuarioByNome(nome);
+        listUsuario.sort(Comparator.comparing(Usuario::getId));
+
+        return ResponseEntity.ok(listUsuario.stream()
+                .map(usuario -> new UsuarioDTO(usuario))
+                .collect(Collectors.toList()));
+    }
+
     //Fazer o processo em cache, simulando um processo lento que demore 6 segundos essa consulta (Thread)
     //Se tiver em cache, a mesma consulta depois vai trazer rapidão pois já vai estar em cache!
 //    @Cacheable("cache_usuario_listall") //Essa opção por default só refaz a consulta se tiver alteração nos parâmetros da entrada, caso contrário fica sempre em cache

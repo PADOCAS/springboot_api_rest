@@ -8,11 +8,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     @Query(value = "select u from Usuario u where u.login = :login")
     public Usuario findUsuarioByLogin(@Param("login") String login);
+
+    @Query(value = "select u from Usuario u where u.nome ilike %:nome%")
+    public List<Usuario> findUsuarioByNome(@Param("nome") String nome);
 
     @Transactional
     @Modifying //Alteração banco de dados
