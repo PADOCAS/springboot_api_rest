@@ -113,10 +113,10 @@ public class UsuarioController {
     //Simulando controle de versão por header (v1), deve ser passado como parâmetro no header da requisição!
     @GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
     public ResponseEntity<?> getUsuarioPorIDHeaderV1(@PathVariable(value = "id") Long id) {
-        System.out.println("Executando versão Header 1!");
+        System.out.println("Executando versão Header 1 (DIRETO VO)!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
-        //Retornando um DTO -> UsuarioDTO:
-        return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
+        //Retornando direto o VO, com todos os campos disponíveis:
+        return optionalUsuario.isPresent() ? ResponseEntity.ok(optionalUsuario.get()) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
     //Simulando controle de versão por header (v2), deve ser passado como parâmetro no header da requisição!
