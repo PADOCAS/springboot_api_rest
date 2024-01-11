@@ -256,32 +256,40 @@ public class UsuarioController {
     private void chargedCep(Usuario usuario) throws Exception {
         if (usuario != null
                 && usuario.getCep() != null) {
-            //Valida CEP:
-            validaCepInformado(usuario.getCep());
+            //Vamos passar para carregar o CEP apenas se não foi nada informado manualmente ainda,
+            //Casos onde o usuário cadastra manualmente as informações (complemento, etc.. o CEP já foi carregado no site, não precisa fazer novamente)
+            if (((usuario.getLogradouro() == null) || (usuario.getLogradouro().trim().isEmpty()))
+                    && ((usuario.getBairro() == null) || (usuario.getBairro().trim().isEmpty()))
+                    && ((usuario.getComplemento() == null) || (usuario.getComplemento().trim().isEmpty()))
+                    && ((usuario.getUf() == null) || (usuario.getUf().trim().isEmpty()))
+                    && ((usuario.getLocalidade() == null) || (usuario.getLocalidade().trim().isEmpty()))) {
+                //Valida CEP:
+                validaCepInformado(usuario.getCep());
 
-            try {
-                URL url = new URL("https://viacep.com.br/ws/" + usuario.getCep() + "/json/");
-                URLConnection urlConnection = url.openConnection();
-                InputStream inputStream = urlConnection.getInputStream();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                String cep = "";
-                StringBuilder strJsonCep = new StringBuilder();
+                try {
+                    URL url = new URL("https://viacep.com.br/ws/" + usuario.getCep() + "/json/");
+                    URLConnection urlConnection = url.openConnection();
+                    InputStream inputStream = urlConnection.getInputStream();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                    String cep = "";
+                    StringBuilder strJsonCep = new StringBuilder();
 
-                //Varre as linhas:
-                while ((cep = bufferedReader.readLine()) != null) {
-                    strJsonCep.append(cep);
+                    //Varre as linhas:
+                    while ((cep = bufferedReader.readLine()) != null) {
+                        strJsonCep.append(cep);
+                    }
+
+                    Usuario usuarioPreenchimentoCepAuxiliar = new Gson().fromJson(strJsonCep.toString(), Usuario.class);
+                    if (usuarioPreenchimentoCepAuxiliar != null) {
+                        usuario.setLogradouro(usuarioPreenchimentoCepAuxiliar.getLogradouro() == null || usuarioPreenchimentoCepAuxiliar.getLogradouro().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getLogradouro().toUpperCase());
+                        usuario.setBairro(usuarioPreenchimentoCepAuxiliar.getBairro() == null || usuarioPreenchimentoCepAuxiliar.getBairro().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getBairro().toUpperCase());
+                        usuario.setComplemento(usuarioPreenchimentoCepAuxiliar.getComplemento() == null || usuarioPreenchimentoCepAuxiliar.getComplemento().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getComplemento());
+                        usuario.setUf(usuarioPreenchimentoCepAuxiliar.getUf() == null || usuarioPreenchimentoCepAuxiliar.getUf().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getUf().toUpperCase());
+                        usuario.setLocalidade(usuarioPreenchimentoCepAuxiliar.getLocalidade() == null || usuarioPreenchimentoCepAuxiliar.getLocalidade().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getLocalidade().toUpperCase());
+                    }
+                } catch (Exception ex) {
+                    throw new Exception("CEP inválido. Informe um CEP Válido para prosseguir.");
                 }
-
-                Usuario usuarioPreenchimentoCepAuxiliar = new Gson().fromJson(strJsonCep.toString(), Usuario.class);
-                if (usuarioPreenchimentoCepAuxiliar != null) {
-                    usuario.setLogradouro(usuarioPreenchimentoCepAuxiliar.getLogradouro() == null || usuarioPreenchimentoCepAuxiliar.getLogradouro().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getLogradouro().toUpperCase());
-                    usuario.setBairro(usuarioPreenchimentoCepAuxiliar.getBairro() == null || usuarioPreenchimentoCepAuxiliar.getBairro().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getBairro().toUpperCase());
-                    usuario.setComplemento(usuarioPreenchimentoCepAuxiliar.getComplemento() == null || usuarioPreenchimentoCepAuxiliar.getComplemento().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getComplemento());
-                    usuario.setUf(usuarioPreenchimentoCepAuxiliar.getUf() == null || usuarioPreenchimentoCepAuxiliar.getUf().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getUf().toUpperCase());
-                    usuario.setLocalidade(usuarioPreenchimentoCepAuxiliar.getLocalidade() == null || usuarioPreenchimentoCepAuxiliar.getLocalidade().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getLocalidade().toUpperCase());
-                }
-            } catch (Exception ex) {
-                throw new Exception("CEP inválido. Informe um CEP Válido para prosseguir.");
             }
         }
     }
