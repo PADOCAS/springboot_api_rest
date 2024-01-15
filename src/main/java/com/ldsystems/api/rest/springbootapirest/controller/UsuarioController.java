@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioDTO;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
+import com.ldsystems.api.rest.springbootapirest.service.UserDetailImplService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -33,6 +35,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private UserDetailImplService userDetailImplService;
 
     /**
      * Método para retornar uma mensagem ao receber uma requisição
@@ -184,6 +189,7 @@ public class UsuarioController {
     }
 
     @PostMapping(value = "/", produces = "application/json")
+    @Transactional //Transactional (caso der erro em alguma etapa (save do usuário ou do usuario_role) fará o rollback!!!)
     public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave = null;
 
@@ -201,6 +207,9 @@ public class UsuarioController {
             usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
 
             usuarioSave = usuarioRepository.save(usuario);
+
+            //Insere acessos Padrão (usuario_role):
+            userDetailImplService.insereRolesPadrao(usuarioSave.getId());
         }
 
         return ResponseEntity.ok(usuarioSave);

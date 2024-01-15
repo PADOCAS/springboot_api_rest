@@ -23,4 +23,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Modifying //Alteração banco de dados
     @Query(value = "update Usuario u set u.token = :token where u.login = :login")
     public void atualizaTokenUsuario(@Param("login") String login, @Param("token") String token);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "INSERT INTO public.usuario_role (usuario_id, role_id) VALUES (:id, (select rol.id from public.role rol where rol.nome_role = 'ROLE_USER' limit 1))")
+    public void insertUsuarioRolePadrao(@Param("id") Long id);
 }

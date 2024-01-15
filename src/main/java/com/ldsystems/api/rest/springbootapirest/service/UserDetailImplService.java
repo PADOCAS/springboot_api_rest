@@ -26,4 +26,14 @@ public class UserDetailImplService implements UserDetailsService {
 
         return new User(usuario.getUsername(), usuario.getPassword(), usuario.isEnabled(), usuario.isAccountNonExpired(), usuario.isCredentialsNonExpired(), usuario.isAccountNonLocked(), usuario.getAuthorities());
     }
+
+    /**
+     * Salva o usuario_role padrão ROLE_USER para um novo usuário cadastrado!
+     * @param id
+     */
+    public void insereRolesPadrao(Long id) {
+        if (id != null) {
+            usuarioRepository.insertUsuarioRolePadrao(id);
+        }
+    }
 }
