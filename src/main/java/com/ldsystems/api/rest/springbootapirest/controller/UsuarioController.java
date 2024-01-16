@@ -252,9 +252,13 @@ public class UsuarioController {
     }
 
     @DeleteMapping(value = "/{id}", produces = "application/text")
+    @Transactional //Deleta usuario e usuario_role
     public ResponseEntity<?> deletaUsuario(@PathVariable(value = "id") Long id) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
         if (optionalUsuario.isPresent()) {
+            usuarioRepository.deleteUsuarioRoleById(id);
+            //Limpa lista de Role já deletada manualmente acima para não causar problema no hibernate querer matar usuario_role e role!
+            optionalUsuario.get().getListRole().clear();
             usuarioRepository.deleteById(id);
             return ResponseEntity.ok("Usuário deletado com sucesso!");
         } else {

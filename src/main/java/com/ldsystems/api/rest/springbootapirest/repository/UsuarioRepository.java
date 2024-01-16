@@ -28,4 +28,9 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO public.usuario_role (usuario_id, role_id) VALUES (:id, (select rol.id from public.role rol where rol.nome_role = 'ROLE_USER' limit 1))")
     public void insertUsuarioRolePadrao(@Param("id") Long id);
+
+    @Transactional
+    @Modifying
+    @Query(nativeQuery = true, value = "DELETE FROM public.usuario_role usuRol WHERE usuRol.usuario_id = :id")
+    public void deleteUsuarioRoleById(@Param("id") Long id);
 }
