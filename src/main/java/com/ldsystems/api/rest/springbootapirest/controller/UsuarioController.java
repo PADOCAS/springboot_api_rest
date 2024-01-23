@@ -9,6 +9,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -160,8 +163,19 @@ public class UsuarioController {
 //Qualquer mudança nas tabelas envolvidas vai atualizar o cache com os dados atualizados!
     @GetMapping(value = "/listall", produces = "application/json")
     public ResponseEntity<?> getListUsuario() {
-        List<Usuario> listUsuario = usuarioRepository.findAll();
-        listUsuario.sort(Comparator.comparing(Usuario::getId));
+        //Paginando informações (Primeira página 5 registros):
+        PageRequest page = PageRequest.of(0, 5, Sort.by("id"));
+        Page<Usuario> pageUsuarios = usuarioRepository.findAll(page);
+
+        // Mapeamento da lista de usuários para uma lista de UsuarioDTO
+        Page<UsuarioDTO> pageUsuarioDTO = pageUsuarios.
+                map(usuario -> new UsuarioDTO(usuario));
+
+        return ResponseEntity.ok(pageUsuarioDTO);
+
+        //Sem Paginação:
+//        List<Usuario> listUsuario = usuarioRepository.findAll();
+//        listUsuario.sort(Comparator.comparing(Usuario::getId));
 
 //        try {
 //            Thread.sleep(2000);
@@ -170,9 +184,9 @@ public class UsuarioController {
 //        }
 
         //Retornando uma list DTO -> UsuarioDTO:
-        return ResponseEntity.ok(listUsuario.stream()
-                .map(usuario -> new UsuarioDTO(usuario))
-                .collect(Collectors.toList()));
+//        return ResponseEntity.ok(listUsuario.stream()
+//                .map(usuario -> new UsuarioDTO(usuario))
+//                .collect(Collectors.toList()));
     }
 
     //Simulando um retorno de um relatório:
@@ -189,7 +203,8 @@ public class UsuarioController {
     }
 
     @PostMapping(value = "/", produces = "application/json")
-    @Transactional //Transactional (caso der erro em alguma etapa (save do usuário ou do usuario_role) fará o rollback!!!)
+    @Transactional
+    //Transactional (caso der erro em alguma etapa (save do usuário ou do usuario_role) fará o rollback!!!)
     public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave = null;
 
