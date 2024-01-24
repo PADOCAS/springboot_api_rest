@@ -189,6 +189,32 @@ public class UsuarioController {
 //                .collect(Collectors.toList()));
     }
 
+    /**
+     * Método para trazer os usuários para determinada página que recebe por parâmetro
+     *
+     * @param pagina (Long)
+     * @return ResponseEntity
+     * @throws Exception Exceção ao consultar usuários para a página
+     */
+    @CacheEvict(value = "cachePageUsuarios", allEntries = true)
+    @CachePut(value = "cachePageUsuarios")
+    @GetMapping(value = "/page/{pagina}", produces = "application/json")
+    public ResponseEntity<?> getPageUsuario(@PathVariable(value = "pagina") Long pagina) throws Exception {
+        if (pagina != null) {
+            //Paginando informações (Página recebida parâmetro, trazendo até 5 registros):
+            PageRequest page = PageRequest.of(pagina.intValue(), 5, Sort.by("id"));
+            Page<Usuario> pageUsuarios = usuarioRepository.findAll(page);
+
+            // Mapeamento da lista de usuários para uma lista de UsuarioDTO
+            Page<UsuarioDTO> pageUsuarioDTO = pageUsuarios.
+                    map(usuario -> new UsuarioDTO(usuario));
+
+            return ResponseEntity.ok(pageUsuarioDTO);
+        } else {
+            throw new Exception("Deve ser enviado por parâmetro a página que quer visualizar.");
+        }
+    }
+
     //Simulando um retorno de um relatório:
     //Exemplo URL -> http://localhost:8080/springbootapirest/usuario/10/venda/299
     @GetMapping(value = "/{id}/venda/{codigovenda}", produces = "application/pdf")
