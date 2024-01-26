@@ -2,6 +2,8 @@ package com.ldsystems.api.rest.springbootapirest.repository;
 
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +19,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     public Usuario findUsuarioByLogin(@Param("login") String login);
 
     @Query(value = "select u from Usuario u where u.nome ilike %:nome%")
-    public List<Usuario> findUsuarioByNome(@Param("nome") String nome);
+    public Page<Usuario> findUsuarioByNome(@Param("nome") String nome, PageRequest pageRequest);
 
     @Transactional
     @Modifying //Alteração banco de dados

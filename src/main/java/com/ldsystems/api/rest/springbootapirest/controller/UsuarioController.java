@@ -24,10 +24,8 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
 @CrossOrigin(origins = "*")  // Forma default, qualquer sistema poderá acessar esse RestController
@@ -146,12 +144,22 @@ public class UsuarioController {
     @CachePut(value = "cacheUsuariosPorNome")
     @GetMapping(value = "/usuariopornome/{nome}", produces = "application/json")
     public ResponseEntity<?> getListUsuarioPorNome(@PathVariable(value = "nome") String nome) {
-        List<Usuario> listUsuario = usuarioRepository.findUsuarioByNome(nome);
-        listUsuario.sort(Comparator.comparing(Usuario::getId));
+        //Com Paginação:
+        PageRequest page = PageRequest.of(0, 5, Sort.by("id"));
+        Page<Usuario> pageUsuarios = usuarioRepository.findUsuarioByNome(nome, page);
 
-        return ResponseEntity.ok(listUsuario.stream()
-                .map(usuario -> new UsuarioDTO(usuario))
-                .collect(Collectors.toList()));
+        Page<UsuarioDTO> pageUsuariosDto = pageUsuarios
+                .map(usuario -> new UsuarioDTO(usuario));
+
+        return ResponseEntity.ok(pageUsuariosDto);
+
+        //Sem paginação:
+//        List<Usuario> listUsuario = usuarioRepository.findUsuarioByNome(nome);
+//        listUsuario.sort(Comparator.comparing(Usuario::getId));
+//
+//        return ResponseEntity.ok(listUsuario.stream()
+//                .map(usuario -> new UsuarioDTO(usuario))
+//                .collect(Collectors.toList()));
     }
 
     //Fazer o processo em cache, simulando um processo lento que demore 6 segundos essa consulta (Thread)
@@ -187,6 +195,34 @@ public class UsuarioController {
 //        return ResponseEntity.ok(listUsuario.stream()
 //                .map(usuario -> new UsuarioDTO(usuario))
 //                .collect(Collectors.toList()));
+    }
+
+    /**
+     * Método para trazer os usuários para determinada página que recebe por parâmetro
+     *
+     * @param pagina (Long)
+     * @return ResponseEntity
+     * @throws Exception Exceção ao consultar usuários para a página
+     */
+    @CacheEvict(value = "cachePageUsuariosPorNome", allEntries = true)
+    @CachePut(value = "cachePageUsuariosPorNome")
+    @GetMapping(value = "/pageusuariopornome/{pagina}/{nome}", produces = "application/json")
+    public ResponseEntity<?> getPageUsuarioPorNome(@PathVariable(value = "pagina") Long pagina, @PathVariable(value = "nome") String nome) throws Exception {
+        if (pagina != null
+                && nome != null
+                && !nome.isEmpty()) {
+            //Paginando informações (Página recebida parâmetro, trazendo até 5 registros):
+            PageRequest page = PageRequest.of(pagina.intValue(), 5, Sort.by("id"));
+            Page<Usuario> pageUsuarios = usuarioRepository.findUsuarioByNome(nome, page);
+
+            // Mapeamento da lista de usuários para uma lista de UsuarioDTO
+            Page<UsuarioDTO> pageUsuarioDTO = pageUsuarios.
+                    map(usuario -> new UsuarioDTO(usuario));
+
+            return ResponseEntity.ok(pageUsuarioDTO);
+        } else {
+            throw new Exception("Deve ser enviado por parâmetro a página que quer visualizar e o nome filtrado.");
+        }
     }
 
     /**
