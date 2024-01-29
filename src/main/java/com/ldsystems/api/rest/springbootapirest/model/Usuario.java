@@ -1,11 +1,14 @@
 package com.ldsystems.api.rest.springbootapirest.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,6 +52,12 @@ public class Usuario implements UserDetails {
 
     @Column(name = "uf", length = 2)
     private String uf;
+
+    @JsonFormat(pattern = "dd/MM/yyyy") //Em JSON vai receber nesse formato
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "dd/MM/yyyy") //Formato de Data que vai trabalhar
+    @Temporal(TemporalType.DATE) //Grava no formato data no banco de dados
+    @Column(name = "data_nascimento")
+    private Date dataNascimento;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
@@ -213,6 +222,14 @@ public class Usuario implements UserDetails {
 
     public void setUf(String uf) {
         this.uf = uf;
+    }
+
+    public Date getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(Date dataNascimento) {
+        this.dataNascimento = dataNascimento;
     }
 
     @Override
