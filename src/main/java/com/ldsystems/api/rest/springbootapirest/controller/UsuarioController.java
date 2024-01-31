@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -283,6 +284,14 @@ public class UsuarioController {
             //Criptografando Senha:
             usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
 
+            //Verifica hora para data (não deixar gravação com hora 00:00):
+            //No angular tratamos apenas data (String), não quisemos tratar hora lá!
+            if (usuario.getDataNascimento() != null) {
+                //Joga a Data mais o horário para 12:12:02 para gravação não ficar 00:00:00 por mais que não usamos hora nesse campo!
+                Date dateHour = new Date((usuario.getDataNascimento().getTime() + (12 * 60 * 60 * 1000) + (12 * 60 * 1000) + 2 * 1000));
+                usuario.setDataNascimento(dateHour);
+            }
+
             usuarioSave = usuarioRepository.save(usuario);
 
             //Insere acessos Padrão (usuario_role):
@@ -315,6 +324,14 @@ public class UsuarioController {
                         && !optionalUsuario.get().getSenha().equals(usuario.getSenha())) {
                     //Criptografando Senha:
                     usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
+                }
+
+                //Verifica hora para data (não deixar gravação com hora 00:00):
+                //No angular tratamos apenas data (String), não quisemos tratar hora lá!
+                if (usuario.getDataNascimento() != null) {
+                    //Joga a Data mais o horário para 12:12:02 para gravação não ficar 00:00:00 por mais que não usamos hora nesse campo!
+                    Date dateHour = new Date((usuario.getDataNascimento().getTime() + (12 * 60 * 60 * 1000) + (12 * 60 * 1000) + 2 * 1000));
+                    usuario.setDataNascimento(dateHour);
                 }
 
                 usuarioSave = usuarioRepository.save(usuario);
