@@ -6,6 +6,7 @@ import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioDTO;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import com.ldsystems.api.rest.springbootapirest.service.UserDetailImplService;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -265,10 +266,11 @@ public class UsuarioController {
         return optionalUsuario.isPresent() ? ResponseEntity.ok(new UsuarioDTO(optionalUsuario.get())) : new ResponseEntity<>("Nenhum usuário encontrado!", HttpStatus.NOT_FOUND);
     }
 
+    //@Valid -> Vamos validar o objeto (validações referentes ao VO) antes de salvar!
     @PostMapping(value = "/", produces = "application/json")
     @Transactional
     //Transactional (caso der erro em alguma etapa (save do usuário ou do usuario_role) fará o rollback!!!)
-    public ResponseEntity<Usuario> cadastrarUsuario(@RequestBody Usuario usuario) throws Exception {
+    public ResponseEntity<Usuario> cadastrarUsuario(@Valid @RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave = null;
 
         if (usuario != null) {
@@ -301,8 +303,9 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioSave);
     }
 
+    //@Valid -> Vamos validar o objeto (validações referentes ao VO) antes de salvar!
     @PutMapping(value = "/", produces = "application/json")
-    public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuario) throws Exception {
+    public ResponseEntity<?> atualizarUsuario(@Valid @RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave;
 
         if (usuario != null

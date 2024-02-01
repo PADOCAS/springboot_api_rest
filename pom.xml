@@ -124,9 +124,9 @@
 
         <!--        Valida CPF-->
         <dependency>
-            <groupId>br.com.caelum.stella</groupId>
-            <artifactId>caelum-stella-bean-validation</artifactId>
-            <version>2.1.6</version>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
         </dependency>
     </dependencies>
 
