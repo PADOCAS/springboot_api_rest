@@ -1,5 +1,6 @@
 package com.ldsystems.api.rest.springbootapirest.model;
 
+import br.com.caelum.stella.bean.validation.CPF;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -58,6 +59,10 @@ public class Usuario implements UserDetails {
     @Temporal(TemporalType.DATE) //Grava no formato data no banco de dados
     @Column(name = "data_nascimento")
     private Date dataNascimento;
+
+    @CPF
+    @Column(name = "cpf", length = 11)
+    private String cpf;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
@@ -230,6 +235,14 @@ public class Usuario implements UserDetails {
 
     public void setDataNascimento(Date dataNascimento) {
         this.dataNascimento = dataNascimento;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     @Override

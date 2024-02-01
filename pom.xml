@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-<!--            Retirado o RunTime para utilizar uma classe pela dependência ao validar Exceptions do PSQL-->
+            <!--            Retirado o RunTime para utilizar uma classe pela dependência ao validar Exceptions do PSQL-->
             <!--            <scope>runtime</scope>-->
         </dependency>
 
@@ -86,7 +86,7 @@
             <version>0.12.3</version>
         </dependency>
 
-<!--        GSON para trabalhar com JSON:-->
+        <!--        GSON para trabalhar com JSON:-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -120,6 +120,13 @@
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
             <version>2.15.3</version>
+        </dependency>
+
+        <!--        Valida CPF-->
+        <dependency>
+            <groupId>br.com.caelum.stella</groupId>
+            <artifactId>caelum-stella-bean-validation</artifactId>
+            <version>2.1.6</version>
         </dependency>
     </dependencies>
 
