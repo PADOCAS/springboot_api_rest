@@ -67,6 +67,10 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
 
+    @ManyToOne
+    @JoinColumn(name = "profissao_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "usuario_fk1"))
+    private Profissao profissao;
+
     //Dessa forma, está criando uma unique isolado para o role_id, vamos tirar ela manualmente para não atrapalhar!
     //Deixar no banco apenas uma unique com os 2 campos (CONSTRAINT usuario_role_uk1 UNIQUE (usuario_id, role_id))
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -243,6 +247,14 @@ public class Usuario implements UserDetails {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public Profissao getProfissao() {
+        return profissao;
+    }
+
+    public void setProfissao(Profissao profissao) {
+        this.profissao = profissao;
     }
 
     @Override
