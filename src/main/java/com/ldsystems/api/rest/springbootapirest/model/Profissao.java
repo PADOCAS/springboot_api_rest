@@ -1,5 +1,6 @@
 package com.ldsystems.api.rest.springbootapirest.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -18,6 +19,7 @@ public class Profissao implements Serializable {
     @Column(name = "descricao", nullable = false, length = 50)
     private String descricao;
 
+    @JsonIgnore //Não deixar recursivo, carregando usuário novamente no JSON e ficar em loop infinito!
     @OneToMany(mappedBy = "profissao")
     private List<Usuario> listUsuario;
 
