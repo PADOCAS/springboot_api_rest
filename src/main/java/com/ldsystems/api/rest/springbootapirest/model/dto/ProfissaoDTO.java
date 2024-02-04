@@ -13,6 +13,9 @@ public class ProfissaoDTO implements Serializable {
 
     private String descricao;
 
+    //Descricao para trabalhar no componente Angular já pronta
+    private String idDescricaoFormatted;
+
     public ProfissaoDTO() {
     }
 
@@ -21,6 +24,12 @@ public class ProfissaoDTO implements Serializable {
         if (profissao != null) {
             this.id = profissao.getId();
             this.descricao = profissao.getDescricao();
+            if (getId() != null
+                    && getDescricao() != null) {
+                this.idDescricaoFormatted = new StringBuilder().append("(").append(getId()).append(") ").append(getDescricao()).toString();
+            } else {
+                this.idDescricaoFormatted = null;
+            }
         }
     }
 
@@ -38,6 +47,19 @@ public class ProfissaoDTO implements Serializable {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public String getIdDescricaoFormatted() {
+        if (getId() != null
+                && getDescricao() != null) {
+            return new StringBuilder().append("(").append(getId()).append(") ").append(getDescricao()).toString();
+        } else {
+            return null;
+        }
+    }
+
+    public void setIdDescricaoFormatted(String idDescricaoFormatted) {
+        this.idDescricaoFormatted = idDescricaoFormatted;
     }
 
     @Override

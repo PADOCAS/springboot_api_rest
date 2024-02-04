@@ -28,7 +28,7 @@ public class ProfissaoController {
         List<Profissao> listProfissao = profissaoRepository.findAll();
 
         //Ordena por Descrição:
-        listProfissao.sort(Comparator.comparing(Profissao::getDescricao));
+        listProfissao.sort(Comparator.comparing(Profissao::getId));
 
         //Retorna List ProfissaoDTO apenas com dados necessários:
         return ResponseEntity.ok(listProfissao.stream()
