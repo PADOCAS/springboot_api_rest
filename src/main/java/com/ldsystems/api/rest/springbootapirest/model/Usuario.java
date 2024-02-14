@@ -3,11 +3,14 @@ package com.ldsystems.api.rest.springbootapirest.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.ws.rs.DefaultValue;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +67,10 @@ public class Usuario implements UserDetails {
     @Column(name = "cpf", length = 11)
     private String cpf;
 
+    @Column(name = "salario", precision = 19, scale = 2)
+    @ColumnDefault(value = "0")
+    private BigDecimal salario;
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
 
@@ -82,6 +89,8 @@ public class Usuario implements UserDetails {
     private List<Role> listRole;
 
     public Usuario() {
+        //Default ZERO
+        this.salario = BigDecimal.ZERO;
     }
 
     @Override
@@ -231,6 +240,14 @@ public class Usuario implements UserDetails {
 
     public void setUf(String uf) {
         this.uf = uf;
+    }
+
+    public BigDecimal getSalario() {
+        return salario;
+    }
+
+    public void setSalario(BigDecimal salario) {
+        this.salario = salario;
     }
 
     public Date getDataNascimento() {
