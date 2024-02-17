@@ -56,6 +56,7 @@ public class WebConfigSecurity {
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers(mvcMatcherBuilder.pattern("/springbootapirest/**")).permitAll() //Definir o caminho do contexto para aplicação permite ALL
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/index")).permitAll() // Qualquer usuário acessa a página inicial
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/recuperarsenhauser/**")).permitAll() // Qualquer usuário pode recuperar a senha por e-mail
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/login")).permitAll() // Qualquer usuário acessa o login
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll() // Qualquer usuário acessa o login
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS, "/**")).permitAll() //HTTP do tipo OPTIONS para qualquer caminho são permitidas para todos os usuários, independentemente de estarem autenticados ou não. Essas solicitações são frequentemente usadas por navegadores e outros clientes para testar a disponibilidade de um serviço

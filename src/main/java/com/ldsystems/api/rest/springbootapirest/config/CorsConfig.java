@@ -6,18 +6,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * Configuração Global de CrossOrigin
- *
  */
-//@Configuration
-public class CorsConfig {
+@Configuration
+public class CorsConfig implements WebMvcConfigurer {
 
-//        implements WebMvcConfigurer {
-//
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        //Tudo será declarado aqui:
-//        registry.addMapping("/usuario")
-//                .allowedOrigins("https://www.ldsystems.com.br", "https://www.google.com.br")
-//                .allowedMethods("GET", "POST", "PUT", "DELETE");
-//    }
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        //Tudo será declarado aqui, isso fará com que a resposta seja liberada para qualquer navegador:
+        registry.addMapping("/usuario/**")
+                .allowedOrigins("*")
+                .allowedMethods("*");
+
+        registry.addMapping("/recuperarsenhauser/**")
+                .allowedOrigins("*")
+                .allowedMethods("*");
+    }
 }
