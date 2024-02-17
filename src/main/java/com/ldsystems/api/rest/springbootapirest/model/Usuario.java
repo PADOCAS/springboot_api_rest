@@ -3,7 +3,7 @@ package com.ldsystems.api.rest.springbootapirest.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.ws.rs.DefaultValue;
+import jakarta.validation.constraints.Email;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -70,6 +70,10 @@ public class Usuario implements UserDetails {
     @Column(name = "salario", precision = 19, scale = 2)
     @ColumnDefault(value = "0")
     private BigDecimal salario;
+
+    @Email
+    @Column(name = "email", nullable = false, length = 60)
+    private String email;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
@@ -272,6 +276,14 @@ public class Usuario implements UserDetails {
 
     public void setProfissao(Profissao profissao) {
         this.profissao = profissao;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
