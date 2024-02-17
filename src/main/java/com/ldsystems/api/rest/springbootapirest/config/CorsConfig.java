@@ -12,10 +12,11 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        //Tudo será declarado aqui, isso fará com que a resposta seja liberada para qualquer navegador:
-        registry.addMapping("/usuario/**")
-                .allowedOrigins("*")
-                .allowedMethods("*");
+        //Fará com que a resposta seja liberada para qualquer navegador, liberação CORS:
+        //Do Usuário não precisamos fazer liberação especifica de CORS
+//        registry.addMapping("/usuario")
+//                .allowedOrigins("https://www.ldsystems.com.br", "https://www.google.com.br")
+//                .allowedMethods("GET", "POST", "PUT", "DELETE");
 
         registry.addMapping("/recuperarsenhauser/**")
                 .allowedOrigins("*")
