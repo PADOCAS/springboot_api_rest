@@ -50,7 +50,7 @@ public class RecuperarSenhaUserController {
             str.append("<p>Olá ").append(userCharged.getNome()).append("</p>");
             str.append("<p>Você solicitou a recuperação de acesso para sua conta no sistema.</p>");
             str.append("<p>Para redefinir sua senha, clique no botão abaixo e siga as instruções.</p>");
-            str.append("<a href=\"http://www.uol.com.br\" class=\"btn btn -primary\">Redefinir Senha</a>");
+            str.append("<a href=\"http://www.uol.com.br\" target=\"_blank\" class=\"btn btn -primary\">Redefinir Senha</a>");
             str.append("<p>Atenciosamente,</p>");
             str.append("<p>LDSystems</p>");
             str.append("</div>");
