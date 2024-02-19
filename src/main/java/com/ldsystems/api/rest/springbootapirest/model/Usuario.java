@@ -78,6 +78,9 @@ public class Usuario implements UserDetails {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Telefone> listTelefone;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TokenRecuperacaoSenha> listTokenRecuperacaoSenha;
+
     @ManyToOne
     @JoinColumn(name = "profissao_id", referencedColumnName = "id", foreignKey = @ForeignKey(name = "usuario_fk1"))
     private Profissao profissao;
@@ -284,6 +287,14 @@ public class Usuario implements UserDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<TokenRecuperacaoSenha> getListTokenRecuperacaoSenha() {
+        return listTokenRecuperacaoSenha;
+    }
+
+    public void setListTokenRecuperacaoSenha(List<TokenRecuperacaoSenha> listTokenRecuperacaoSenha) {
+        this.listTokenRecuperacaoSenha = listTokenRecuperacaoSenha;
     }
 
     @Override
