@@ -337,6 +337,15 @@ public class UsuarioController {
                     usuario.setDataNascimento(dateHour);
                 }
 
+                //Não vamos alterar a lista de TokenRecuperação, deixa como está atualmente:
+                usuario.setListTokenRecuperacaoSenha(optionalUsuario.get().getListTokenRecuperacaoSenha());
+                if (usuario.getListTokenRecuperacaoSenha() != null
+                        && !usuario.getListTokenRecuperacaoSenha().isEmpty()) {
+                    usuario.getListTokenRecuperacaoSenha().forEach(tokenRecuperacaoSenha -> {
+                        tokenRecuperacaoSenha.setUsuario(usuario);
+                    });
+                }
+
                 usuarioSave = usuarioRepository.save(usuario);
             } else {
                 return ResponseEntity.ok("Usuário com ID(" + usuario.getId().toString() + ") " + "não encontrado!");
@@ -365,7 +374,8 @@ public class UsuarioController {
 
     private void chargedCep(Usuario usuario) throws Exception {
         if (usuario != null
-                && usuario.getCep() != null) {
+                && usuario.getCep() != null
+                && !usuario.getCep().trim().isEmpty()) {
             //Vamos passar para carregar o CEP apenas se não foi nada informado manualmente ainda,
             //Casos onde o usuário cadastra manualmente as informações (complemento, etc.. o CEP já foi carregado no site, não precisa fazer novamente)
             if (((usuario.getLogradouro() == null) || (usuario.getLogradouro().trim().isEmpty()))
