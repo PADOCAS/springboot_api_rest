@@ -22,8 +22,11 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -383,6 +386,7 @@ public class UsuarioController {
                     && ((usuario.getComplemento() == null) || (usuario.getComplemento().trim().isEmpty()))
                     && ((usuario.getUf() == null) || (usuario.getUf().trim().isEmpty()))
                     && ((usuario.getLocalidade() == null) || (usuario.getLocalidade().trim().isEmpty()))) {
+
                 //Valida CEP:
                 validaCepInformado(usuario.getCep());
 
@@ -390,7 +394,7 @@ public class UsuarioController {
                     URL url = new URL("https://viacep.com.br/ws/" + usuario.getCep() + "/json/");
                     URLConnection urlConnection = url.openConnection();
                     InputStream inputStream = urlConnection.getInputStream();
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
                     String cep = "";
                     StringBuilder strJsonCep = new StringBuilder();
 
@@ -407,6 +411,10 @@ public class UsuarioController {
                         usuario.setUf(usuarioPreenchimentoCepAuxiliar.getUf() == null || usuarioPreenchimentoCepAuxiliar.getUf().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getUf().toUpperCase());
                         usuario.setLocalidade(usuarioPreenchimentoCepAuxiliar.getLocalidade() == null || usuarioPreenchimentoCepAuxiliar.getLocalidade().trim().isEmpty() ? null : usuarioPreenchimentoCepAuxiliar.getLocalidade().toUpperCase());
                     }
+                    bufferedReader.close();
+                    inputStream.close();
+                } catch (RuntimeException ex) {
+                    throw new Exception(ex.getMessage());
                 } catch (Exception ex) {
                     throw new Exception("CEP inválido. Informe um CEP Válido para prosseguir.");
                 }

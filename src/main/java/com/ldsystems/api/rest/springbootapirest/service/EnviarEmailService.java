@@ -19,6 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Optional;
@@ -43,7 +44,7 @@ public class EnviarEmailService {
     private static final long EXPIRATION_TIME = 7200000;
 
     //Key gerada com a chave secreta em algoritmo de assinatura HS512:
-    private static final Key SIGNING_KEY = new SecretKeySpec(SECRET.getBytes(), SignatureAlgorithm.HS512.getJcaName());
+    private static final Key SIGNING_KEY = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS512.getJcaName());
 
     public Date getDataExpiracaoNovoToken() {
         return new Date(System.currentTimeMillis() + EXPIRATION_TIME);

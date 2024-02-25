@@ -8,6 +8,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -33,7 +36,7 @@ public class JWTTokenAutenticacaoService {
     private static final String SECRET = "dashdSLSDS22332sdd2SSDAAa3457974hgbEERFf8432836dPs2SSenhaExtremamenteSecretaLdSystemsRESTAPI1890udndfh3SDDF2";
 
     //Key gerada com a chave secreta em algoritmo de assinatura HS512:
-    private static final Key SIGNING_KEY = new SecretKeySpec(SECRET.getBytes(), SignatureAlgorithm.HS512.getJcaName());
+    private static final Key SIGNING_KEY = new SecretKeySpec(SECRET.getBytes(StandardCharsets.UTF_8), SignatureAlgorithm.HS512.getJcaName());
 
     //Prefixo do Token -> Fixo Bearer
     private static final String TOKEN_PREFIX = "Bearer";
