@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("ALL")
 @RestController //Arquitetura REST
 @CrossOrigin(origins = "*")  // Forma default, qualquer sistema poderá acessar esse RestController
 @RequestMapping(value = "/profissao")

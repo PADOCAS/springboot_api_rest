@@ -12,15 +12,15 @@ import org.springframework.stereotype.Repository;
 public interface TokenRecuperacaoSenhaRepository extends JpaRepository<TokenRecuperacaoSenha, Long> {
 
     @Query(value = "SELECT t FROM TokenRecuperacaoSenha t WHERE t.token =:token")
-    public TokenRecuperacaoSenha findTokenRecuperacaoSenhaByToken(@Param("token") String token);
+    TokenRecuperacaoSenha findTokenRecuperacaoSenhaByToken(@Param("token") String token);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE Usuario u SET u.senha = :senha WHERE u.id = :id")
-    public void atualizaSenhaUsuario(@Param("id") Long id, @Param("senha") String senha);
+    void atualizaSenhaUsuario(@Param("id") Long id, @Param("senha") String senha);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE TokenRecuperacaoSenha t SET t.utilizado = true WHERE t.id = :id")
-    public void desativaTokenUsuarioSenhaAlterada(@Param("id") Long id);
+    void desativaTokenUsuarioSenhaAlterada(@Param("id") Long id);
 }

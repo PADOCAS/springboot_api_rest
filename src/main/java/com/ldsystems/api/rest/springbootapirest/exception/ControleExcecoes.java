@@ -2,15 +2,12 @@ package com.ldsystems.api.rest.springbootapirest.exception;
 
 import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.validation.ConstraintViolationException;
 import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.validation.ObjectError;
@@ -32,34 +29,34 @@ public class ControleExcecoes {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<?> handleExpiredJwtException(ExpiredJwtException ex, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(),"Token expirado, faça Login ou informe um Token válido para autenticação!", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
+        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Token expirado, faça Login ou informe um Token válido para autenticação!", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
         return new ResponseEntity<>(objetoErro, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<?> handleSignatureJwtException(SignatureException ex, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(),"Token é inválido.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
+        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Token é inválido.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
         return new ResponseEntity<>(objetoErro, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(MalformedJwtException.class)
     public ResponseEntity<?> handleMalformedJwtException(MalformedJwtException ex, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        //Ocorre quando o token não está formatado corretamente. Isso pode ser causado por caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.
-        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(),"Token não está formatado corretamente. Contém caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
+        //Ocorre quando o ‘token’ não está formatado corretamente. Isso pode ser causado por caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.
+        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Token não está formatado corretamente. Contém caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
         return new ResponseEntity<>(objetoErro, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(ClaimJwtException.class)
     public ResponseEntity<?> handleClaimJwtException(ClaimJwtException ex, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        //Ocorre quando o token não está formatado corretamente. Isso pode ser causado por caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.
-        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(),"Reivindicação do token JWT inválida.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
+        //Ocorre quando o ‘token’ não está formatado corretamente. Isso pode ser causado por caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.
+        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Reivindicação do token JWT inválida.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
         return new ResponseEntity<>(objetoErro, HttpStatus.UNAUTHORIZED);
     }
 
-    //Tratamento de exceções a nível de banco de dados (maioria deles)
+    //Tratamento de exceções em nível de banco de dados (maioria deles)
     @ExceptionHandler({DataIntegrityViolationException.class, ConstraintViolationException.class, org.hibernate.exception.ConstraintViolationException.class, SQLException.class, PSQLException.class, UnexpectedRollbackException.class})
     protected ResponseEntity<Object> handleExceptionDataIntegry(Exception ex, WebRequest request) {
         StringBuilder msg = new StringBuilder();

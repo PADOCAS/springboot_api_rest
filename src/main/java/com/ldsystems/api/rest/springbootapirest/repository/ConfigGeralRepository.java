@@ -14,6 +14,6 @@ public interface ConfigGeralRepository extends JpaRepository<ConfigGeral, Long> 
      * @return ConfigGeral
      */
     @Query(value = "select cg from ConfigGeral cg")
-    public ConfigGeral findUniqueConfigGeral();
+    ConfigGeral findUniqueConfigGeral();
 
 }

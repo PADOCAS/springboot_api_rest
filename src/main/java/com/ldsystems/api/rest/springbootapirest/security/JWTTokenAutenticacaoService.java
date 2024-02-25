@@ -8,8 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -28,7 +26,7 @@ import java.util.Date;
 @Component
 public class JWTTokenAutenticacaoService {
 
-    //Tempo de expiração do nosso Token (Milisegundos 172800000 - 2 dias):
+    //Tempo de expiração do nosso ‘Token’ (Milisegundos 172800000 - 2 dias):
     //A cada 2 dias ele vai fazer uma nova autenticação
     private static final long EXPIRATION_TIME = 172800000;
 
@@ -41,15 +39,15 @@ public class JWTTokenAutenticacaoService {
     //Prefixo do Token -> Fixo Bearer
     private static final String TOKEN_PREFIX = "Bearer";
 
-    //Identificação do cabeçalho da resposta do Token -> Fixo Authorization
+    //Identificação do cabeçalho da resposta do ‘Token’ -> Fixo Authorization
     private static final String HEADER_STRING = "Authorization";
 
     /**
-     * Gerando token de autenticação e adicionando o cabeçalho e a resposta HTTP
+     * Gerando ‘token’ de autenticação e adicionando o cabeçalho e a resposta HTTP
      */
     public void addAuthentication(HttpServletResponse response, String username) throws IOException {
-        //Montagem do Token:
-        //Referente a aula 44 -> Muita coisa depreciada, vamos alinhar isso quando for rodar!
+        //Montagem do ‘Token’:
+        //Muita coisa depreciada, vamos alinhar isso quando for rodar!
         String jwt = Jwts.builder()
                 .subject(username) //Adiciona o Usuário
                 .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) //Expiration -> Data atual + 2 dias
@@ -72,16 +70,16 @@ public class JWTTokenAutenticacaoService {
     }
 
     /**
-     * Retorna o usuário validado com token ou caso não seja válido, retorna null
+     * Retorna o usuário validado com ‘token’ ou caso não seja válido, retorna null
      */
     public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
-        //Pega o token enviado no cabaçalho HTTP:
+        //Pega o ‘token’ enviado no cabaçalho HTTP:
         String token = request.getHeader(HEADER_STRING);
 
         if (token != null) {
-            //Faz a validação do Token do usuário na requisição:
+            //Faz a validação do ‘Token’ do usuário na requisição:
             // Use a chave secreta para verificar o token
-            //Referente a aula 44 -> Muita coisa depreciada, vamos alinhar isso quando for rodar!
+            //Muita coisa depreciada, vamos alinhar isso quando for rodar!
             Claims claims = Jwts.parser()
                     .setSigningKey(SIGNING_KEY) //Bearer 943574395794357493574398543958
                     .build()
@@ -96,7 +94,7 @@ public class JWTTokenAutenticacaoService {
                 if (usuario != null) {
                     //Caso quiser fazer uma validação do token enviado com o token gravado no banco de dados para o usuário, colocar a validação aqui!
                     //Caso for diferente não deixa autenticar!
-                    //Não achei legal colocar isso ainda, pois o usuário pode criar vários tokens para ele sendo válidos (mais de 1), basta entrar /login e vai gerar token
+                    //Não achei legal colocar isso ainda, pois o usuário pode criar vários ‘tokens’ para ele sendo válidos (mais de 1), basta entrar /login e vai gerar token
                     //O jeito que foi feita a aula ele fica apenas um token gravado para o usuário o que não faria sentido!! não vamos colocar isso agora:
 //                    if(usuario.getToken().equals(token.replace(TOKEN_PREFIX, "").replaceAll("\\s", ""))) {
                     //Liberando respostas -> Permite que seu servidor seja acessível por qualquer aplicativo, independentemente de onde ele esteja hospedado:

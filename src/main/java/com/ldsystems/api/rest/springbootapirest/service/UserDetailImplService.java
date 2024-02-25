@@ -29,7 +29,7 @@ public class UserDetailImplService implements UserDetailsService {
 
     /**
      * Salva o usuario_role padrão ROLE_USER para um novo usuário cadastrado!
-     * @param id
+     * @param id Long
      */
     public void insereRolesPadrao(Long id) {
         if (id != null) {

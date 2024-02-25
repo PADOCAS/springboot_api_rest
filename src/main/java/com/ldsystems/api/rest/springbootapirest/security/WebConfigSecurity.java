@@ -20,6 +20,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 /**
  * Mapeia URL's, endereços, autoriza ou bloqueia acessos a URL
  */
+@SuppressWarnings("ALL")
 @Configuration
 @EnableWebSecurity
 public class WebConfigSecurity {

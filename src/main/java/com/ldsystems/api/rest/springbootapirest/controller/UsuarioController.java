@@ -22,10 +22,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
+@SuppressWarnings("ALL")
 @CrossOrigin(origins = "*")  // Forma default, qualquer sistema poderá acessar esse RestController
 //@CrossOrigin(origins = {"https://www.ldsystems.com.br", "https://www.google.com.br"}) // Só serão aceitas requisições vindas dessa URL
 @RestController //Arquitetura REST
@@ -395,7 +394,7 @@ public class UsuarioController {
                     URLConnection urlConnection = url.openConnection();
                     InputStream inputStream = urlConnection.getInputStream();
                     BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-                    String cep = "";
+                    String cep;
                     StringBuilder strJsonCep = new StringBuilder();
 
                     //Varre as linhas:

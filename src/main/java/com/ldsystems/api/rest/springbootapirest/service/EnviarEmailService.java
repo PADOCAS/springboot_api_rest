@@ -40,7 +40,7 @@ public class EnviarEmailService {
     //Uma senha única para compor a autenticação:
     private static final String SECRET = "zou298LSS22332sYSUZzoi1292s9DAAa3457974hgbu2EERFf84dPs2SSenhaExtremamenteSecretaLdSystemsRESTAPI180udndSDDF2";
 
-    //Tempo de expiração do nosso Token (Milisegundos 7200000 -> 2 HORAS):
+    //Tempo de expiração do nosso ‘Token’ (Milisegundos 7200000 -> 2 HORAS):
     private static final long EXPIRATION_TIME = 7200000;
 
     //Key gerada com a chave secreta em algoritmo de assinatura HS512:
@@ -84,7 +84,7 @@ public class EnviarEmailService {
         if (usuarioId != null
                 && dataExpiracao != null) {
             str.append(Jwts.builder()
-                    .subject(usuarioId.toString()) //Adiciona o ID do Usuário
+                    .subject(usuarioId.toString()) //Adiciona o ‘ID’ do Usuário
                     .expiration(dataExpiracao)
                     .signWith(SIGNING_KEY, SignatureAlgorithm.HS512).compact()); //Compactação e algoritmos de geração de senha
         }
@@ -93,21 +93,21 @@ public class EnviarEmailService {
     }
 
     /**
-     * Retorna o usuário validado com token ou caso não seja válido, retorna null
+     * Retorna o usuário validado com ‘token’ ou caso não seja válido, retorna null
      */
     public Boolean getValidTokenRecuperacaoSenha(TokenRecuperacaoSenhaDTO tokenRecuperacaoSenhaDTO) throws Exception {
         try {
             if (tokenRecuperacaoSenhaDTO != null
                     && tokenRecuperacaoSenhaDTO.getToken() != null) {
-                //Faz a validação do Token de alteração de senha:
-                // Use a chave secreta para verificar o token
+                //Faz a validação do ‘Token’ de alteração de senha:
+                // Use a chave secreta para verificar o ‘token’
                 Claims claims = Jwts.parser()
                         .setSigningKey(SIGNING_KEY) //943574395794357493574398543958
                         .build()
                         .parseClaimsJws(tokenRecuperacaoSenhaDTO.getToken().replaceAll("\\s", ""))//943574395794357493574398543958
                         .getBody();
 
-                String userIdStr = claims.getSubject(); //ID do Usuário
+                String userIdStr = claims.getSubject(); //‘ID’ do Usuário
 
                 if (userIdStr != null) {
                     Optional<Usuario> usuarioOptional = usuarioRepository.findById(Long.parseLong(userIdStr));
@@ -138,14 +138,7 @@ public class EnviarEmailService {
                     && configGeral.getSmtpHost() != null
                     && configGeral.getSmtpPort() != null
                     && configGeral.getSocketPort() != null) {
-                Properties properties = new Properties();
-                properties.put("mail.smtp.ssl.trust", "*"); //Permissão SSL
-                properties.put("mail.smtp.auth", true); //Autenticação
-                properties.put("mail.smtp.starttls", true); //Autorização
-                properties.put("mail.smtp.host", configGeral.getSmtpHost()); //Servidor do Google
-                properties.put("mail.smtp.port", configGeral.getSmtpPort()); //Porta Servidor
-                properties.put("mail.smtp.socketFactory.port", configGeral.getSocketPort()); //Porta Socket
-                properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); //Classe de conexão Socket
+                Properties properties = getProperties(configGeral);
 
                 Session session = Session.getInstance(properties, new Authenticator() {
                     @Override
@@ -170,5 +163,20 @@ public class EnviarEmailService {
         } else {
             throw new MessagingException("E-mail de destino inválido!\nNão foi possível enviar o E-mail de recupação.");
         }
+    }
+
+    private static Properties getProperties(ConfigGeral configGeral) {
+        Properties properties = new Properties();
+
+        if (configGeral != null) {
+            properties.put("mail.smtp.ssl.trust", "*"); //Permissão SSL
+            properties.put("mail.smtp.auth", true); //Autenticação
+            properties.put("mail.smtp.starttls", true); //Autorização
+            properties.put("mail.smtp.host", configGeral.getSmtpHost()); //Servidor do Google
+            properties.put("mail.smtp.port", configGeral.getSmtpPort()); //Porta Servidor
+            properties.put("mail.smtp.socketFactory.port", configGeral.getSocketPort()); //Porta Socket
+            properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory"); //Classe de conexão ‘Socket’
+        }
+        return properties;
     }
 }
