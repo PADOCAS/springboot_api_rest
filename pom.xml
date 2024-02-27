@@ -141,6 +141,13 @@
             <artifactId>javax.mail</artifactId>
             <version>1.6.2</version>
         </dependency>
+
+        <!-- JasperReport -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.21.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -162,7 +169,7 @@
                     </execution>
                 </executions>
                 <configuration>
-<!--                    <includeFilterFile>src/main/findbugs-includes.xml</includeFilterFile>-->
+                    <!--                    <includeFilterFile>src/main/findbugs-includes.xml</includeFilterFile>-->
                     <excludeFilterFile>src/main/findbugs-excludes.xml</excludeFilterFile>
                     <plugins>
                         <plugin>
