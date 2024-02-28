@@ -23,64 +23,9 @@
 		<property name="com.jaspersoft.studio.field.label" value="nome"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
 	</field>
-	<field name="senha" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="senha"/>
-		<property name="com.jaspersoft.studio.field.label" value="senha"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="token" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="token"/>
-		<property name="com.jaspersoft.studio.field.label" value="token"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="bairro" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="bairro"/>
-		<property name="com.jaspersoft.studio.field.label" value="bairro"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="cep" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="cep"/>
-		<property name="com.jaspersoft.studio.field.label" value="cep"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="complemento" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="complemento"/>
-		<property name="com.jaspersoft.studio.field.label" value="complemento"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="localidade" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="localidade"/>
-		<property name="com.jaspersoft.studio.field.label" value="localidade"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="logradouro" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="logradouro"/>
-		<property name="com.jaspersoft.studio.field.label" value="logradouro"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="uf" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="uf"/>
-		<property name="com.jaspersoft.studio.field.label" value="uf"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="data_nascimento" class="java.sql.Date">
+	<field name="dataNascimento" class="java.sql.Date">
 		<property name="com.jaspersoft.studio.field.name" value="data_nascimento"/>
 		<property name="com.jaspersoft.studio.field.label" value="data_nascimento"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="cpf" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.name" value="cpf"/>
-		<property name="com.jaspersoft.studio.field.label" value="cpf"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="profissao_id" class="java.lang.Long">
-		<property name="com.jaspersoft.studio.field.name" value="profissao_id"/>
-		<property name="com.jaspersoft.studio.field.label" value="profissao_id"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
-	</field>
-	<field name="salario" class="java.math.BigDecimal">
-		<property name="com.jaspersoft.studio.field.name" value="salario"/>
-		<property name="com.jaspersoft.studio.field.label" value="salario"/>
 		<property name="com.jaspersoft.studio.field.tree.path" value="usuario"/>
 	</field>
 	<field name="email" class="java.lang.String">
@@ -194,7 +139,7 @@
 				<textElement textAlignment="Center">
 					<font size="8"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{data_nascimento}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{dataNascimento}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

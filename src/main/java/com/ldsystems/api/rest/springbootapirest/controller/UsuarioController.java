@@ -4,9 +4,12 @@ import com.google.gson.Gson;
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioDTO;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
+import com.ldsystems.api.rest.springbootapirest.service.ReportService;
 import com.ldsystems.api.rest.springbootapirest.service.UserDetailImplService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -25,10 +28,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
 @SuppressWarnings("ALL")
@@ -43,6 +43,9 @@ public class UsuarioController {
 
     @Autowired
     private UserDetailImplService userDetailImplService;
+
+    @Autowired
+    private ReportService reportService;
 
     /**
      * Método para retornar uma mensagem ao receber uma requisição
@@ -372,6 +375,24 @@ public class UsuarioController {
         } else {
             return ResponseEntity.ok("Usuário não encontrado!");
         }
+    }
+
+    /**
+     * Impressão do relatório de Usuário em String base64 - PDF
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @GetMapping(value = "/relatorio", produces = "application/text")
+    public ResponseEntity<String> downloadRelatorioUsuario(HttpServletRequest request) throws Exception {
+        List<Usuario> listUsuario = usuarioRepository.findAll();
+        listUsuario.sort(Comparator.comparing(Usuario::getId));
+
+        byte[] pdf = reportService.getReportPdf(listUsuario, "usuario", request.getServletContext());
+        String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
+
+        return ResponseEntity.ok(base64Pdf);
     }
 
     private void chargedCep(Usuario usuario) throws Exception {
