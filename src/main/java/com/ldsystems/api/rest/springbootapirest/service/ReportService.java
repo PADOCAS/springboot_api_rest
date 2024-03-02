@@ -30,8 +30,6 @@ public class ReportService implements Serializable {
             //Parâmetros:
             Map<String, Object> param = new HashMap<>();
 
-            String caminhoRelatorio = context.getRealPath("report");
-
             //Caminho para Imagem - Logo que vai buscar lá nos Relatórios:
             param.put("REPORT_PARAMETERS_IMG", context.getRealPath("report") + File.separator);
 
