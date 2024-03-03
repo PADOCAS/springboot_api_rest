@@ -148,6 +148,13 @@
             <artifactId>jasperreports</artifactId>
             <version>6.21.2</version>
         </dependency>
+
+        <!-- Fontes do Jasper para respeitar negrito, etc.. -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.21.2</version>
+        </dependency>
     </dependencies>
 
     <build>
