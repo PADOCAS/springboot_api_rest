@@ -3,7 +3,9 @@ package com.ldsystems.api.rest.springbootapirest.controller;
 import com.google.gson.Gson;
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioDTO;
+import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioReportDTO;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
+import com.ldsystems.api.rest.springbootapirest.repository.specification.UsuarioSpecification;
 import com.ldsystems.api.rest.springbootapirest.service.ReportService;
 import com.ldsystems.api.rest.springbootapirest.service.UserDetailImplService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +30,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 //@CrossOrigin dessa forma qualquer sistema poderá acessar esse RestController
@@ -387,9 +390,74 @@ public class UsuarioController {
     @GetMapping(value = "/relatorio", produces = "application/text")
     public ResponseEntity<String> downloadRelatorioUsuario(HttpServletRequest request) throws Exception {
         List<Usuario> listUsuario = usuarioRepository.findAll();
+
+        if (listUsuario == null
+                || listUsuario.isEmpty()) {
+            //Retorna Objeto NULO caso não tenha registro!
+            return ResponseEntity.ok(null);
+        }
         listUsuario.sort(Comparator.comparing(Usuario::getId));
 
-        byte[] pdf = reportService.getReportPdf(listUsuario, "usuario", request.getServletContext());
+        byte[] pdf = reportService.getReportPdf(listUsuario, "usuario", new HashMap<>(), request.getServletContext());
+        String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
+
+        return ResponseEntity.ok(base64Pdf);
+    }
+
+    /**
+     * Impressão do relatório de Usuário em String base64 - PDF (Recebendo parâmetro para filtrar relatório)
+     *
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/relatorio/", produces = "application/text")
+    public ResponseEntity<String> downloadRelatorioUsuarioWithParam(HttpServletRequest request, @RequestBody UsuarioReportDTO usuarioReportDto) throws Exception {
+        Map<String, Object> param = new HashMap<>();
+
+        if (usuarioReportDto != null) {
+            if (usuarioReportDto.getDataNascimentoInicio() != null
+                    && usuarioReportDto.getDataNascimentoFim() != null) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat dateFormatParamRel = new SimpleDateFormat("yyyy-MM-dd");
+                //String dataInicio = dateFormatParamRel.format(dateFormat.parse(usuarioReportDto.getDataNascimentoInicio()));
+                //String dataFim = dateFormatParamRel.format(dateFormat.parse(usuarioReportDto.getDataNascimentoFim()));
+
+                //Data Início:
+                java.util.Date dateInicio = dateFormatParamRel.parse(dateFormatParamRel.format(dateFormat.parse(usuarioReportDto.getDataNascimentoInicio())));
+
+                //Data Fim:
+                java.util.Date dateFim = dateFormatParamRel.parse(dateFormatParamRel.format(dateFormat.parse(usuarioReportDto.getDataNascimentoFim())));
+
+                param.put("DATA_NASC_INICIO", usuarioReportDto.getDataNascimentoInicio());
+                param.put("DATA_NASC_FIM", usuarioReportDto.getDataNascimentoFim());
+                param.put("dataNascInicio", dateInicio);
+                param.put("dataNascFim", dateFim);
+            }
+
+            if (usuarioReportDto.getProfissao() != null
+                    && usuarioReportDto.getProfissao().getId() != null
+                    && usuarioReportDto.getProfissao().getDescricao() != null) {
+                param.put("profissaoId", usuarioReportDto.getProfissao().getId());
+                param.put("PROFISSAO", "(" + usuarioReportDto.getProfissao().getId() + ") " + usuarioReportDto.getProfissao().getDescricao().toUpperCase());
+            }
+        }
+
+        //Select filtrando dados:
+        List<Usuario> listUsuario = usuarioRepository.findAll(
+                UsuarioSpecification.dataNascimentoEntre(param.get("dataNascInicio") == null ? null : (Date) param.get("dataNascInicio"), param.get("dataNascFim") == null ? null : (Date) param.get("dataNascFim"))
+                        .and(UsuarioSpecification.profissaoIdIgual(param.get("profissaoId") == null ? null : (Long) param.get("profissaoId")))
+        );
+
+        if (listUsuario == null
+                || listUsuario.isEmpty()) {
+            //Retorna Objeto NULO caso não tenha registro!
+            return ResponseEntity.ok(null);
+        }
+
+        listUsuario.sort(Comparator.comparing(Usuario::getId));
+
+        byte[] pdf = reportService.getReportPdf(listUsuario, "usuario", param, request.getServletContext());
         String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
 
         return ResponseEntity.ok(base64Pdf);

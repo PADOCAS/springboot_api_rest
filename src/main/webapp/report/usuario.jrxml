@@ -6,6 +6,7 @@
 	<parameter name="REPORT_PARAMETERS_IMG" class="java.lang.String"/>
 	<parameter name="DATA_NASC_INICIO" class="java.lang.String"/>
 	<parameter name="DATA_NASC_FIM" class="java.lang.String"/>
+	<parameter name="PROFISSAO" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[select *
   from public.usuario;]]>
@@ -66,7 +67,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="38">
+		<band height="52">
 			<printWhenExpression><![CDATA[$V{PAGE_NUMBER} == 1]]></printWhenExpression>
 			<staticText>
 				<reportElement x="0" y="0" width="550" height="16" uuid="1c47ef94-e4dd-4a54-83ac-e8457594496a"/>
@@ -90,8 +91,22 @@
 				<textFieldExpression><![CDATA[($P{DATA_NASC_INICIO} != null && $P{DATA_NASC_FIM} != null ? $P{DATA_NASC_INICIO} + " a " + $P{DATA_NASC_FIM} : "Todos")]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement x="0" y="35" width="549" height="1" uuid="64fa19be-2b2b-43c8-88f2-7392096c4967"/>
+				<reportElement x="0" y="50" width="549" height="1" uuid="64fa19be-2b2b-43c8-88f2-7392096c4967"/>
 			</line>
+			<staticText>
+				<reportElement x="0" y="34" width="140" height="15" uuid="eac8f770-b7c6-4f1e-a8df-7de3fe6466c6"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Profissão:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="145" y="34" width="404" height="14" uuid="081af358-1804-45ef-af18-73e243e11f90"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{PROFISSAO} != null ? $P{PROFISSAO} : "Todas")]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>

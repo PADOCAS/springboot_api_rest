@@ -18,7 +18,7 @@ public class ReportService implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public byte[] getReportPdf(List<?> listDataBean, String nomeRelatorio, ServletContext context) throws Exception {
+    public byte[] getReportPdf(List<?> listDataBean, String nomeRelatorio, Map<String, Object> paramRel, ServletContext context) throws Exception {
         //Obter conexão com o banco de dados:
         if (nomeRelatorio != null
                 && listDataBean != null) {
@@ -28,13 +28,15 @@ public class ReportService implements Serializable {
             JRBeanCollectionDataSource jrBeanColDs = new JRBeanCollectionDataSource(listDataBean);
 
             //Parâmetros:
-            Map<String, Object> param = new HashMap<>();
+            if(paramRel == null) {
+                paramRel = new HashMap<>();
+            }
 
             //Caminho para Imagem - Logo que vai buscar lá nos Relatórios:
-            param.put("REPORT_PARAMETERS_IMG", context.getRealPath("report") + File.separator);
+            paramRel.put("REPORT_PARAMETERS_IMG", context.getRealPath("report") + File.separator);
 
-//            JasperPrint print = JasperFillManager.fillReport(caminhoJasper, param, connection);
-            JasperPrint print = JasperFillManager.fillReport(caminhoJasper, param, jrBeanColDs);
+//            JasperPrint print = JasperFillManager.fillReport(caminhoJasper, paramRel, connection); //Pode trabalhar direto com conection também fazendo select dentro do Ireport lá.. (mas vamos mandar direto a lista pronta)
+            JasperPrint print = JasperFillManager.fillReport(caminhoJasper, paramRel, jrBeanColDs);
 
             return JasperExportManager.exportReportToPdf(print);
         }
