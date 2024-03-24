@@ -495,7 +495,8 @@ public class UsuarioController {
                     if (!arrayNomes.isEmpty()) {
                         arrayNomes.append(",");
                     }
-                    arrayNomes.append("'").append(res.getNome()).append("'");
+                    //Armazena em formato JSON para string, aspas duplas separando strings, para o relatorio vai em json depois:
+                    arrayNomes.append("\"").append(res.getNome()).append("\"");
 
                     //Salarios:
                     if (!arraySalarios.isEmpty()) {
