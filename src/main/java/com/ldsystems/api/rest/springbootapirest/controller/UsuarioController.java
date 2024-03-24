@@ -3,7 +3,9 @@ package com.ldsystems.api.rest.springbootapirest.controller;
 import com.google.gson.Gson;
 import com.ldsystems.api.rest.springbootapirest.model.Usuario;
 import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioDTO;
+import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioGraficoDTO;
 import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioReportDTO;
+import com.ldsystems.api.rest.springbootapirest.model.dto.UsuarioSalarioDTO;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import com.ldsystems.api.rest.springbootapirest.repository.specification.UsuarioSpecification;
 import com.ldsystems.api.rest.springbootapirest.service.ReportService;
@@ -20,6 +22,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,6 +53,9 @@ public class UsuarioController {
 
     @Autowired
     private ReportService reportService;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     /**
      * Método para retornar uma mensagem ao receber uma requisição
@@ -461,6 +468,48 @@ public class UsuarioController {
         String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
 
         return ResponseEntity.ok(base64Pdf);
+    }
+
+    @GetMapping(value = "/graficosalario", produces = "application/json")
+    public ResponseEntity<UsuarioGraficoDTO> getGraficoSalarioUsuarios() {
+        UsuarioGraficoDTO usuarioGraficoDto = new UsuarioGraficoDTO();
+        StringBuilder arrayNomes = new StringBuilder();
+        StringBuilder arraySalarios = new StringBuilder();
+
+        StringBuilder sql = new StringBuilder();
+        sql.append("         select usu.nome,  ")
+                .append("       usu.salario  ")
+                .append("      from public.usuario usu  ")
+                .append("     where usu.salario > 0  ")
+                .append("       and usu.nome is not null   ")
+                .append("  order by usu.salario;  ");
+
+        //Usando query com BeanPropertyRowMapper, ele usa JDBC template, faz o select manual e converte para as colunas do VO/DTO direto! PERFEITO!
+        List<UsuarioSalarioDTO> listUsuarioSalarioDto = jdbcTemplate.query(sql.toString(), new BeanPropertyRowMapper<>(UsuarioSalarioDTO.class));
+        if (listUsuarioSalarioDto != null
+                && !listUsuarioSalarioDto.isEmpty()) {
+            listUsuarioSalarioDto.forEach(res -> {
+                if (res.getNome() != null
+                        && res.getSalario() != null) {
+                    //Nomes:
+                    if (!arrayNomes.isEmpty()) {
+                        arrayNomes.append(",");
+                    }
+                    arrayNomes.append("'").append(res.getNome()).append("'");
+
+                    //Salarios:
+                    if (!arraySalarios.isEmpty()) {
+                        arraySalarios.append(",");
+                    }
+                    arraySalarios.append(res.getSalario().setScale(2));
+                }
+            });
+        }
+
+        usuarioGraficoDto.setNome(arrayNomes.toString());
+        usuarioGraficoDto.setSalario(arraySalarios.toString());
+
+        return ResponseEntity.ok(usuarioGraficoDto);
     }
 
     private void chargedCep(Usuario usuario) throws Exception {
