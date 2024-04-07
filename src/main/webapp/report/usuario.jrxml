@@ -101,7 +101,7 @@
 				<text><![CDATA[Profissão:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="145" y="34" width="404" height="14" uuid="081af358-1804-45ef-af18-73e243e11f90"/>
+				<reportElement x="145" y="34" width="404" height="15" uuid="081af358-1804-45ef-af18-73e243e11f90"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10"/>
 				</textElement>
