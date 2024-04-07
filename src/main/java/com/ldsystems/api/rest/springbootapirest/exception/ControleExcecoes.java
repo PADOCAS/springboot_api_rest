@@ -29,14 +29,14 @@ public class ControleExcecoes {
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<?> handleExpiredJwtException(ExpiredJwtException ex, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Token expirado, faça Login ou informe um Token válido para autenticação!", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
+        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
         return new ResponseEntity<>(objetoErro, HttpStatus.UNAUTHORIZED);
     }
 
     @ExceptionHandler(SignatureException.class)
     public ResponseEntity<?> handleSignatureJwtException(SignatureException ex, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
-        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Token é inválido.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
+        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Acesso Negado -> Token é inválido.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
         return new ResponseEntity<>(objetoErro, HttpStatus.UNAUTHORIZED);
     }
 
@@ -44,7 +44,7 @@ public class ControleExcecoes {
     public ResponseEntity<?> handleMalformedJwtException(MalformedJwtException ex, WebRequest request) {
         String requestUri = ((ServletWebRequest) request).getRequest().getRequestURI();
         //Ocorre quando o ‘token’ não está formatado corretamente. Isso pode ser causado por caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.
-        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Token não está formatado corretamente. Contém caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
+        ObjetoErro objetoErro = new ObjetoErro(ex.getClass().getCanonicalName(), "Acesso Negado -> Token não está formatado corretamente. Contém caracteres inválidos, comprimento incorreto ou falta de componentes essenciais.", requestUri, HttpStatus.UNAUTHORIZED.value() + " ==> " + HttpStatus.UNAUTHORIZED.getReasonPhrase(), LocalDateTime.now());
         return new ResponseEntity<>(objetoErro, HttpStatus.UNAUTHORIZED);
     }
 
