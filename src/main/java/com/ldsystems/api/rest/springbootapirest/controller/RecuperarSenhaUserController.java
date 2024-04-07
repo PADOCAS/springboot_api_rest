@@ -71,6 +71,7 @@ public class RecuperarSenhaUserController {
                 str.append("<p>Esse link tem expiração de 2 horas.</p>");
                 str.append("<p>Atenciosamente,</p>");
                 str.append("<p>LDSystems</p>");
+                str.append("<br/><b>Essa mensagem é automática, favor não responder esse e-mail.</b>");
                 str.append("</div>");
 
                 enviarEmailService.enviarEmail("Recuperação de Acesso", userCharged.getEmail(), str.toString());
