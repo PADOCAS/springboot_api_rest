@@ -10,6 +10,12 @@ import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import com.ldsystems.api.rest.springbootapirest.repository.specification.UsuarioSpecification;
 import com.ldsystems.api.rest.springbootapirest.service.ReportService;
 import com.ldsystems.api.rest.springbootapirest.service.UserDetailImplService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -43,6 +49,7 @@ import java.util.*;
 //@CrossOrigin(origins = {"https://www.ldsystems.com.br", "https://www.google.com.br"}) // Só serão aceitas requisições vindas dessa URL
 @RestController //Arquitetura REST
 @RequestMapping(value = "/usuario")
+@Tag(name = "Controle de Usuários", description = "Controle de Usuários")
 public class UsuarioController {
 
     @Autowired
@@ -68,6 +75,16 @@ public class UsuarioController {
     //defaultValue, caso não passar o parametro nome, vai assumir esse default!
     //required default é SIM, se você colocar false ele não vai exigir para chamada do método!
     @GetMapping(value = "/", produces = "application/json")
+    @Hidden //Oculta método no swagger
+    @Operation(summary = "Teste boas vindas usuário", description = "Teste para receber parâmetros e retornar mensagem com eles para o usuário")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> init(@RequestParam(value = "nome", defaultValue = "estudante", required = false) String nome, @RequestParam(value = "salario", required = false) BigDecimal salario) {
         System.out.println("Nome: " + nome);
         System.out.println("Salário: " + salario);
@@ -78,6 +95,16 @@ public class UsuarioController {
         return new ResponseEntity<>(str.toString(), HttpStatus.OK);
     }
 
+    @Hidden //Oculta método no swagger
+    @Operation(summary = "Teste instância de Usuário", description = "Teste para instânciar um usuário e retornar")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     @GetMapping(value = "/teste", produces = "application/json")
     public ResponseEntity<UsuarioDTO> getUsuario() {
         Usuario usuario = new Usuario();
@@ -94,6 +121,16 @@ public class UsuarioController {
     @CrossOrigin(origins = "*")  //Forma default, qualquer sistema poderá acessar esse RestController
 //    @CrossOrigin(origins = "https://www.ldsystems.com.br", methods = {RequestMethod.GET})
     @GetMapping(value = "/listteste", produces = "application/json")
+    @Hidden //Oculta método no swagger
+    @Operation(summary = "Teste instância lista de Usuário", description = "Teste para instânciar lista de usuário e retornar")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<List<UsuarioDTO>> getUsuariosTesteManual() {
         Usuario usuario = new Usuario();
         usuario.setId(1L);
@@ -117,6 +154,16 @@ public class UsuarioController {
 
     //Simulando controle de versão direto na URI (v1)
     @GetMapping(value = "v1/{id}", produces = "application/json")
+    @Operation(summary = "Retornar Usuário por ID - controle versão (v1)", description = "Retornar Usuário por ID - controle versão (v1)")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado."),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getUsuarioPorIDV1(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão 1!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
@@ -126,6 +173,16 @@ public class UsuarioController {
 
     //Simulando controle de versão direto na URI (v2
     @GetMapping(value = "v2/{id}", produces = "application/json")
+    @Operation(summary = "Retornar Usuário por ID - controle versão (v2)", description = "Retornar Usuário por ID - controle versão (v2)")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado."),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getUsuarioPorIDV2(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão 2!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
@@ -135,6 +192,16 @@ public class UsuarioController {
 
     //Simulando controle de versão por header (v1), deve ser passado como parâmetro no header da requisição!
     @GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v1")
+    @Operation(summary = "Retornar Usuário por ID - controle versão (v1)", description = "Retornar Usuário por ID - controle versão (v1)")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado."),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getUsuarioPorIDHeaderV1(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão Header 1 (DIRETO VO)!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
@@ -144,6 +211,16 @@ public class UsuarioController {
 
     //Simulando controle de versão por header (v2), deve ser passado como parâmetro no header da requisição!
     @GetMapping(value = "/{id}", produces = "application/json", headers = "X-API-Version=v2")
+    @Operation(summary = "Retornar Usuário por ID - controle versão (v2)", description = "Retornar Usuário por ID - controle versão (v2)")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado."),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getUsuarioPorIDHeaderV2(@PathVariable(value = "id") Long id) {
         System.out.println("Executando versão Header 2!");
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
@@ -160,6 +237,15 @@ public class UsuarioController {
     @CacheEvict(value = "cacheUsuariosPorNome", allEntries = true)
     @CachePut(value = "cacheUsuariosPorNome")
     @GetMapping(value = "/usuariopornome/{nome}", produces = "application/json")
+    @Operation(summary = "Retornar Usuário por nome", description = "Retornar Usuário por nome")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getListUsuarioPorNome(@PathVariable(value = "nome") String nome) {
         //Com Paginação:
         PageRequest page = PageRequest.of(0, 5, Sort.by("id"));
@@ -187,6 +273,15 @@ public class UsuarioController {
     @CachePut(value = "cacheUsuarios")
 //Qualquer mudança nas tabelas envolvidas vai atualizar o cache com os dados atualizados!
     @GetMapping(value = "/listall", produces = "application/json")
+    @Operation(summary = "Retornar todos os usuários - paginado", description = "Retornar todos os usuários - paginado")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getListUsuario() {
         //Paginando informações (Primeira página 5 registros):
         PageRequest page = PageRequest.of(0, 5, Sort.by("id"));
@@ -224,6 +319,15 @@ public class UsuarioController {
     @CacheEvict(value = "cachePageUsuariosPorNome", allEntries = true)
     @CachePut(value = "cachePageUsuariosPorNome")
     @GetMapping(value = "/pageusuariopornome/{pagina}/{nome}", produces = "application/json")
+    @Operation(summary = "Retornar Usuários por nome com paginação", description = "Retornar Usuários por nome com paginação")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getPageUsuarioPorNome(@PathVariable(value = "pagina") Long pagina, @PathVariable(value = "nome") String nome) throws Exception {
         if (pagina != null
                 && nome != null
@@ -252,6 +356,15 @@ public class UsuarioController {
     @CacheEvict(value = "cachePageUsuarios", allEntries = true)
     @CachePut(value = "cachePageUsuarios")
     @GetMapping(value = "/page/{pagina}", produces = "application/json")
+    @Operation(summary = "Retornar Usuários em uma página", description = "Retornar Usuários em uma página")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getPageUsuario(@PathVariable(value = "pagina") Long pagina) throws Exception {
         if (pagina != null) {
             //Paginando informações (Página recebida parâmetro, trazendo até 5 registros):
@@ -271,6 +384,17 @@ public class UsuarioController {
     //Simulando um retorno de um relatório:
     //Exemplo URL -> http://localhost:8080/springbootapirest/usuario/10/venda/299
     @GetMapping(value = "/{id}/venda/{codigovenda}", produces = "application/pdf")
+    @Hidden //Não mostrar no swagger
+    @Operation(summary = "Retornar Vendas", description = "Teste para retornar vendas (simulação)")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado."),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> getRelatorioPdfApenasTeste(@PathVariable(value = "id") Long id, @PathVariable(value = "codigovenda") Long codigovenda) {
         System.out.println("Id: " + id + ", Venda: " + codigovenda);
 
@@ -284,6 +408,15 @@ public class UsuarioController {
     //@Valid -> Vamos validar o objeto (validações referentes ao VO) antes de salvar!
     @PostMapping(value = "/", produces = "application/json")
     @Transactional
+    @Operation(summary = "Salvar Usuário", description = "Salvar Usuário")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     //Transactional (caso der erro em alguma etapa (save do usuário ou do usuario_role) fará o rollback!!!)
     public ResponseEntity<Usuario> cadastrarUsuario(@Valid @RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave = null;
@@ -320,6 +453,18 @@ public class UsuarioController {
 
     //@Valid -> Vamos validar o objeto (validações referentes ao VO) antes de salvar!
     @PutMapping(value = "/", produces = "application/json")
+    @Operation(summary = "Atualizar Usuário", description = "Atualizar Usuário")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado."),
+            @ApiResponse(responseCode = "405", description = "Você não tem permissão para editar o Usuário 'admin'."),
+            @ApiResponse(responseCode = "406", description = "Deve ser informado um ID para o usuário que deseja atualizar."),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> atualizarUsuario(@Valid @RequestBody Usuario usuario) throws Exception {
         Usuario usuarioSave;
 
@@ -327,63 +472,86 @@ public class UsuarioController {
                 && usuario.getId() != null) {
             Optional<Usuario> optionalUsuario = usuarioRepository.findById(usuario.getId());
             if (optionalUsuario.isPresent()) {
-                if (usuario.getListTelefone() != null) {
-                    usuario.getListTelefone().forEach(telefone -> {
-                        telefone.setUsuario(usuario);
-                    });
+                if (optionalUsuario.get() != null
+                        && optionalUsuario.get().getLogin() != null
+                        && !optionalUsuario.get().getLogin().equals("admin")) {
+                    if (usuario.getListTelefone() != null) {
+                        usuario.getListTelefone().forEach(telefone -> {
+                            telefone.setUsuario(usuario);
+                        });
+                    }
+
+                    //Consumindo API externa VIACEP:
+                    chargedCep(usuario);
+
+                    //Verifica se a senha for enviada uma atualização:
+                    if (optionalUsuario.get().getSenha() != null
+                            && usuario.getSenha() != null
+                            && !optionalUsuario.get().getSenha().equals(usuario.getSenha())) {
+                        //Criptografando Senha:
+                        usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
+                    }
+
+                    //Verifica hora para data (não deixar gravação com hora 00:00):
+                    //No angular tratamos apenas data (String), não quisemos tratar hora lá!
+                    if (usuario.getDataNascimento() != null) {
+                        //Joga a Data mais o horário para 12:12:02 para gravação não ficar 00:00:00 por mais que não usamos hora nesse campo!
+                        Date dateHour = new Date((usuario.getDataNascimento().getTime() + (12 * 60 * 60 * 1000) + (12 * 60 * 1000) + 2 * 1000));
+                        usuario.setDataNascimento(dateHour);
+                    }
+
+                    //Não vamos alterar a lista de TokenRecuperação, deixa como está atualmente:
+                    usuario.setListTokenRecuperacaoSenha(optionalUsuario.get().getListTokenRecuperacaoSenha());
+                    if (usuario.getListTokenRecuperacaoSenha() != null
+                            && !usuario.getListTokenRecuperacaoSenha().isEmpty()) {
+                        usuario.getListTokenRecuperacaoSenha().forEach(tokenRecuperacaoSenha -> {
+                            tokenRecuperacaoSenha.setUsuario(usuario);
+                        });
+                    }
+
+                    usuarioSave = usuarioRepository.save(usuario);
+                } else {
+                    return new ResponseEntity<>("Você não tem permissão para editar o Usuário 'admin'.", HttpStatus.METHOD_NOT_ALLOWED);
                 }
-
-                //Consumindo API externa VIACEP:
-                chargedCep(usuario);
-
-                //Verifica se a senha for enviada uma atualização:
-                if (optionalUsuario.get().getSenha() != null
-                        && usuario.getSenha() != null
-                        && !optionalUsuario.get().getSenha().equals(usuario.getSenha())) {
-                    //Criptografando Senha:
-                    usuario.setSenha(new BCryptPasswordEncoder().encode(usuario.getSenha()));
-                }
-
-                //Verifica hora para data (não deixar gravação com hora 00:00):
-                //No angular tratamos apenas data (String), não quisemos tratar hora lá!
-                if (usuario.getDataNascimento() != null) {
-                    //Joga a Data mais o horário para 12:12:02 para gravação não ficar 00:00:00 por mais que não usamos hora nesse campo!
-                    Date dateHour = new Date((usuario.getDataNascimento().getTime() + (12 * 60 * 60 * 1000) + (12 * 60 * 1000) + 2 * 1000));
-                    usuario.setDataNascimento(dateHour);
-                }
-
-                //Não vamos alterar a lista de TokenRecuperação, deixa como está atualmente:
-                usuario.setListTokenRecuperacaoSenha(optionalUsuario.get().getListTokenRecuperacaoSenha());
-                if (usuario.getListTokenRecuperacaoSenha() != null
-                        && !usuario.getListTokenRecuperacaoSenha().isEmpty()) {
-                    usuario.getListTokenRecuperacaoSenha().forEach(tokenRecuperacaoSenha -> {
-                        tokenRecuperacaoSenha.setUsuario(usuario);
-                    });
-                }
-
-                usuarioSave = usuarioRepository.save(usuario);
             } else {
-                return ResponseEntity.ok("Usuário com ID(" + usuario.getId().toString() + ") " + "não encontrado!");
+                return new ResponseEntity<>("Usuário com ID(" + usuario.getId().toString() + ") " + "não encontrado!", HttpStatus.NOT_FOUND);
             }
         } else {
-            return ResponseEntity.ok("Deve ser informado um ID para o usuário que deseja atualizar!");
+            return new ResponseEntity<>("Deve ser informado um ID para o usuário que deseja atualizar!", HttpStatus.NOT_ACCEPTABLE);
         }
 
         return ResponseEntity.ok(usuarioSave);
     }
 
-    @DeleteMapping(value = "/{id}", produces = "application/text")
+    @DeleteMapping(value = "/{id}", produces = "application/json")
     @Transactional //Deleta usuario e usuario_role
+    @Operation(summary = "Apagar Usuário", description = "Apagar Usuário")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado."),
+            @ApiResponse(responseCode = "406", description = "Você não tem permissão para excluir o Usuário 'admin'."),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> deletaUsuario(@PathVariable(value = "id") Long id) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(id);
         if (optionalUsuario.isPresent()) {
-            usuarioRepository.deleteUsuarioRoleById(id);
-            //Limpa lista de Role já deletada manualmente acima para não causar problema no hibernate querer matar usuario_role e role!
-            optionalUsuario.get().getListRole().clear();
-            usuarioRepository.deleteById(id);
-            return ResponseEntity.ok("Usuário deletado com sucesso!");
+            if (optionalUsuario.get() != null
+                    && optionalUsuario.get().getLogin() != null
+                    && !optionalUsuario.get().getLogin().equals("admin")) {
+                usuarioRepository.deleteUsuarioRoleById(id);
+                //Limpa lista de Role já deletada manualmente acima para não causar problema no hibernate querer matar usuario_role e role!
+                optionalUsuario.get().getListRole().clear();
+                usuarioRepository.deleteById(id);
+                return ResponseEntity.ok("Usuário deletado com sucesso!");
+            } else {
+                return new ResponseEntity<>("Você não tem permissão para excluir o Usuário 'admin'.", HttpStatus.NOT_ACCEPTABLE);
+            }
         } else {
-            return ResponseEntity.ok("Usuário não encontrado!");
+            return new ResponseEntity<>("Usuário não encontrado!", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -395,6 +563,17 @@ public class UsuarioController {
      * @throws Exception
      */
     @GetMapping(value = "/relatorio", produces = "application/text")
+    @Operation(summary = "Relatório de todos os Usuários", description = "Relatório de todos os Usuários cadastrados em PDF.")
+    @Hidden
+    //Não mostrar no Swagger, Swagger não visualiza PDF direto ali, e retornamos em BASE64, não vamos mostrar relatório lá!
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<String> downloadRelatorioUsuario(HttpServletRequest request) throws Exception {
         List<Usuario> listUsuario = usuarioRepository.findAll();
 
@@ -419,6 +598,17 @@ public class UsuarioController {
      * @throws Exception
      */
     @PostMapping(value = "/relatorio/", produces = "application/text")
+    @Operation(summary = "Relatório de Usuários com filtro", description = "Relatório de Usuários cadastrados de acordo com o filtro passado - em PDF.")
+    @Hidden
+    //Não mostrar no Swagger, Swagger não visualiza PDF direto ali, e retornamos em BASE64, não vamos mostrar relatório lá!
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<String> downloadRelatorioUsuarioWithParam(HttpServletRequest request, @RequestBody UsuarioReportDTO usuarioReportDto) throws Exception {
         Map<String, Object> param = new HashMap<>();
 
@@ -471,6 +661,15 @@ public class UsuarioController {
     }
 
     @GetMapping(value = "/graficosalario", produces = "application/json")
+    @Operation(summary = "Gráfico de Salário x Usuários", description = "Dados para gráfico de Salário x Usuários")
+    @SecurityRequirement(name = "bearerAuth") //Exige Token para executar!
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<UsuarioGraficoDTO> getGraficoSalarioUsuarios() {
         UsuarioGraficoDTO usuarioGraficoDto = new UsuarioGraficoDTO();
         StringBuilder arrayNomes = new StringBuilder();

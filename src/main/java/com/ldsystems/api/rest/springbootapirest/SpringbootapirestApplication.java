@@ -1,5 +1,7 @@
 package com.ldsystems.api.rest.springbootapirest;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc // Permitindo trabalhar com WebMVC
 @RestController //Projeto que vai rodar REST
 @EnableCaching //Habilitar o cache
+@OpenAPIDefinition(servers = {@Server(url = "/springbootapirest", description = "URL Servidor Default")})
 public class SpringbootapirestApplication extends SpringBootServletInitializer {
 
     @Override

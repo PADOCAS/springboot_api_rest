@@ -7,6 +7,12 @@ import com.ldsystems.api.rest.springbootapirest.model.dto.TokenRecuperacaoSenhaD
 import com.ldsystems.api.rest.springbootapirest.repository.TokenRecuperacaoSenhaRepository;
 import com.ldsystems.api.rest.springbootapirest.repository.UsuarioRepository;
 import com.ldsystems.api.rest.springbootapirest.service.EnviarEmailService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +28,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping(value = "/recuperarsenhauser")
+@Tag(name = "Controle de recuperação de senha", description = "Controle de recuperação de senha para os usuários")
 public class RecuperarSenhaUserController {
 
     @Autowired
@@ -35,7 +42,14 @@ public class RecuperarSenhaUserController {
 
     @PostMapping(value = "/", produces = "application/json")
     @Transactional
-//    @ResponseBody
+    @Operation(summary = "Método para recuperação de senha", description = "Envia e-mail para o usuário que deseja resetar a senha.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<ObjetoErro> recuperarSenhaUser(@RequestBody Usuario usuario) throws Exception {
         ObjetoErro objetoErro = new ObjetoErro();
         Usuario userCharged = null;
@@ -92,6 +106,15 @@ public class RecuperarSenhaUserController {
 
     @PostMapping(value = "/resetpassword", produces = "application/json")
     @Transactional
+    @Operation(summary = "Atualiza Senha do Usuário", description = "Atualiza a senha do usuário e desativa o token utilizado no reset.")
+    @Hidden //Não mostrar no Swagger
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operação bem sucedida!"),
+            @ApiResponse(responseCode = "400", description = "Solicitação inválida"),
+            @ApiResponse(responseCode = "401", description = "Token JWT inválido ou ausente"),
+            @ApiResponse(responseCode = "403", description = "Acesso Negado -> Token expirado, faça Login novamente ou informe um Token válido para autenticação!"),
+            @ApiResponse(responseCode = "503", description = "Serviço indisponível")
+    })
     public ResponseEntity<?> recuperarSenhaUser(@RequestBody TokenRecuperacaoSenhaDTO tokenRecuperacaoSenhaDto) throws Exception {
         if (tokenRecuperacaoSenhaDto != null
                 && tokenRecuperacaoSenhaDto.getToken() != null

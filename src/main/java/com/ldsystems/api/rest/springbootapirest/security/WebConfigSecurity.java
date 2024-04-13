@@ -60,6 +60,10 @@ public class WebConfigSecurity {
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/recuperarsenhauser/**")).permitAll() // Qualquer usuário pode recuperar a senha por e-mail
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/login")).permitAll() // Qualquer usuário acessa o login
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll() // Qualquer usuário acessa o login
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/api-docs/**")).permitAll() // Qualquer usuário acessa o Swagger
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll() // Qualquer usuário acessa o Swagger
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui.html")).permitAll() // Qualquer usuário acessa o Swagger
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/webjars/**")).permitAll() // Qualquer usuário acessa o Swagger
                                 .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.OPTIONS, "/**")).permitAll() //HTTP do tipo OPTIONS para qualquer caminho são permitidas para todos os usuários, independentemente de estarem autenticados ou não. Essas solicitações são frequentemente usadas por navegadores e outros clientes para testar a disponibilidade de um serviço
                                 .anyRequest().authenticated()
                 )
