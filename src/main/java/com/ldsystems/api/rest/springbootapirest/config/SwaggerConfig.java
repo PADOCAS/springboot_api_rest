@@ -32,7 +32,18 @@ public class SwaggerConfig {
                         .contact(new Contact().name("Equipe LD Systems").email("ldsystems.atendimento@gmail.com"))
                         .termsOfService("Termo de uso: Open Source")
                         .license(licenca)
-                        .description("Aplicação desenvolvida para testes - Spring REST API x Angular.")
+                        .description(getDescription())
                         .version("v0.0.1"));
+    }
+
+    private String getDescription() {
+        StringBuilder str = new StringBuilder();
+        str.append("Aplicação desenvolvida para projeto - Spring REST API x Angular.");
+        str.append("<br/>");
+        str.append("- Utilize o 'Controle de Autenticação de Usuários' -> /login - passando login e senha, para validar suas credenciais e pegar um Token JWT.");
+        str.append("<br/>");
+        str.append("- Adicione o Token no botão 'Authorize', onde será enviado em todas as requisições que exijam Token.");
+
+        return str.toString();
     }
 }
