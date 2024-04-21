@@ -1,1 +1,1 @@
-# mod33_springboot_api_restful
+# springboot_api_rest
