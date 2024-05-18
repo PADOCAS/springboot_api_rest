@@ -35,7 +35,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
         try {
             System.out.println("Validando as credenciais de Login!");
             //Pegando o Token para validar e retornar o usuario:
-            Usuario usuario = new ObjectMapper().readValue(request.getInputStream(), Usuario.class);
+            Usuario usuario = new ObjectMapper().readValue(request.getReader(), Usuario.class);
             return getAuthenticationManager().authenticate(new UsernamePasswordAuthenticationToken(usuario.getLogin(), usuario.getSenha(), usuario.getAuthorities()));
         } catch (Exception ex) {
             exceptionResolver.resolveException(request, response, null, ex);

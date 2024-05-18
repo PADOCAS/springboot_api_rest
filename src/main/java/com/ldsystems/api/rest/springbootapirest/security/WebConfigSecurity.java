@@ -58,6 +58,7 @@ public class WebConfigSecurity {
                         auth.requestMatchers(mvcMatcherBuilder.pattern("/springbootapirest/**")).permitAll() //Definir o caminho do contexto para aplicação permite ALL
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/index")).permitAll() // Qualquer usuário acessa a página inicial
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/recuperarsenhauser/**")).permitAll() // Qualquer usuário pode recuperar a senha por e-mail
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/validlogin/**")).permitAll() // Qualquer usuário pode recuperar a senha por e-mail
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/login")).permitAll() // Qualquer usuário acessa o login
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/")).permitAll() // Qualquer usuário acessa o login
                                 .requestMatchers(AntPathRequestMatcher.antMatcher("/v3/api-docs/**")).permitAll() // Qualquer usuário acessa o Swagger

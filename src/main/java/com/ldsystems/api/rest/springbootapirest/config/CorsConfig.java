@@ -21,5 +21,9 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/recuperarsenhauser/**")
                 .allowedOrigins("*")
                 .allowedMethods("*");
+
+        registry.addMapping("/validlogin/**")
+                .allowedOrigins("*")
+                .allowedMethods("*");
     }
 }

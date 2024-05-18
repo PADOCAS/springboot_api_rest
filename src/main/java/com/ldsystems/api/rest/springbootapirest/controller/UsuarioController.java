@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -585,7 +584,7 @@ public class UsuarioController {
         listUsuario.sort(Comparator.comparing(Usuario::getId));
 
         byte[] pdf = reportService.getReportPdf(listUsuario, "usuario", new HashMap<>(), request.getServletContext());
-        String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
+        String base64Pdf = "data:application/pdf;base64," + Base64.getEncoder().encodeToString(pdf);
 
         return ResponseEntity.ok(base64Pdf);
     }
@@ -655,7 +654,7 @@ public class UsuarioController {
         listUsuario.sort(Comparator.comparing(Usuario::getId));
 
         byte[] pdf = reportService.getReportPdf(listUsuario, "usuario", param, request.getServletContext());
-        String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
+        String base64Pdf = "data:application/pdf;base64," + Base64.getEncoder().encodeToString(pdf);
 
         return ResponseEntity.ok(base64Pdf);
     }
