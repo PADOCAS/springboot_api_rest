@@ -1,3 +1,7 @@
+--Retirar Constrint que o hibernate cria para uma unique key do role_id (não pode ter), deve ter apenas uma unique com as 2 colunas envolvidas!!
+ALTER TABLE usuario_role
+DROP CONSTRAINT 'nome da constraint tabela usuario_role -> unique de uma coluna';
+
 --Roles:
 insert into (id, nome_role) role values (1, 'ROLE_ADMIN');
 insert into (id, nome_role) role values (2, 'ROLE_USER');
