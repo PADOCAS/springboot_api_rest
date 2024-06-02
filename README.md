@@ -4,6 +4,8 @@
 <h3 align="left">Ferramentas utilizadas:</h3>
 
 - IntelliJ IDEA 2024
+- Payara 5
+- Angular 17
 - Payara Micro 6.2024.4
 - PostgreSQL 
 - Java 17
