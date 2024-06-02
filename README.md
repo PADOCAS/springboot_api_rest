@@ -32,7 +32,7 @@
      `spring.datasource.password=${DB_SPRINGBOOTRESTAPI_ANGULAR_PASSWORD}`
   
 - **Arquivo para configurações iniciais do projeto:** scriptdadosini.sql (Fica na raiz do projeto)
-- **Configurações do servidor de e-mail:** 
+- **Configurações do servidor de e-mail:** Verifique a tabela `config_geral` onde deve ser configurada uma conta remetente -> Envio dos e-mails.
 
 
 <h3 align="left">Servidor para testes:</h3>
